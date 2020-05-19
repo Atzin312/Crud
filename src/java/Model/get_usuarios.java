@@ -10,7 +10,7 @@ package Model;
  * @author atzin
  */
 public class get_usuarios {
-    private int id_usuario;
+    public int id_usuario;
     private String nombre;
     private String apellido;
     
