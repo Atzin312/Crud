@@ -9,6 +9,7 @@ import Model.aclaraciones_pagos;
 import java.sql.CallableStatement;
 import Model.ConnectBD;
 import Model.get_usuarios;
+import Model.rol_usuarios;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.sql.Connection;
@@ -49,9 +50,10 @@ public class Controller_home {
 //    }
    
     
-    @RequestMapping("home.htm")
-    public ModelAndView buscar_usuario(HttpServletRequest request/*2*/) throws SQLException, MalformedURLException, IOException 
+    @RequestMapping("/home")
+    public ModelAndView home(HttpServletRequest request/*2*/) throws SQLException, MalformedURLException, IOException 
     {
+//        Create the list And the sql sentence
         List<get_usuarios> usuarios = new ArrayList<>();
         String sql ="{call sp_getusuario(?)}";
         String txtBuscar = request.getParameter("txtBuscar");
@@ -71,6 +73,7 @@ public class Controller_home {
                     get_usuarios usuario = new get_usuarios();
                     usuario.setId_usuario(servicesRs.getInt(1));
                     usuarios.add(usuario);
+//                    Add value to user id
                     id_usuario = servicesRs.getInt(1);
                     
                 }
@@ -84,7 +87,42 @@ public class Controller_home {
         System.out.println("ID USUARIO "+id_usuario);
         mav.addObject("usuarios",usuarios);
         
+        
+        
         if (id_usuario >=1){
+//            Use value to rol id
+
+
+        List<rol_usuarios> roles = new ArrayList<>();
+        String sql3 =  "{call sp_getrolesusuario(?) }";
+        try (Connection dbConnection3 = dbSource.conectar().getConnection();
+            
+            CallableStatement newService3 = dbConnection3.prepareCall(sql);){
+            
+            newService3.setInt(1, id_usuario);
+            newService3.execute();
+            System.out.println(newService3);
+            
+            try (ResultSet servicesRs = (ResultSet) newService3.getResultSet();){
+                System.out.println("RESPONSE 3:"+servicesRs);
+                while(servicesRs.next()){
+                    rol_usuarios rol = new rol_usuarios();
+                    rol.setId_rol(servicesRs.getInt(1));
+                    rol.setNombre_rol(servicesRs.getString(2));
+                    roles.add(rol);
+                    id_usuario = servicesRs.getInt(1);
+                    
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        
+        System.out.println("ID USUARIO 3 "+id_usuario);
+        mav.addObject("roles",roles);    
+//            Add value for home index 
         List<aclaraciones_pagos> pagos = new ArrayList<>();
         String sql2 = "{call sp_indexaclaracionespagos(?) }";
          
@@ -127,7 +165,7 @@ public class Controller_home {
         }
 
         mav.addObject("pagos", pagos);
-        System.out.println(pagos.get(0).getFecha_solicitud());
+//        System.out.println(pagos.get(0).getFecha_solicitud());
         
         
         }
@@ -136,6 +174,9 @@ public class Controller_home {
         return mav;
     }
     
+    
+   
+}
 //    @RequestMapping("/home.htm")
 //    public ModelAndView index_usuario() 
 //    {
@@ -191,4 +232,3 @@ public class Controller_home {
     
     
 
-}

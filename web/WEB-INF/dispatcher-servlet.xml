@@ -21,6 +21,9 @@
             <props>
                 <prop key="index.htm">indexController</prop>
                 <prop key="home.htm">Controller_home</prop>
+                <prop key="get_usuario.htm">Controller_add_aclaracion</prop>
+                <prop key="add_aclaracion.htm">Controller_add_aclaracion</prop>
+                <prop key="get_roles.htm">Controller_add_aclaracion</prop>
                 
                 
             </props>
@@ -35,7 +38,10 @@
     <!--
     The index controller.
     -->
+    <!--Controlador de Agregar una aclaracion-->
+    <bean name="Controller_add_aclaracion" class="Controller.Controller_add_aclaracion" />
     
+    <!--Controlador de Home-->
     <bean name="Controller_home" class="Controller.Controller_home" />
 <!--    <bean name="Controller_rol" class="Controller.Controller_rol" />
     <bean name="Controller_usuarios" class="Controller.Controller_usuarios" />-->
