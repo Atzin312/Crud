@@ -16,12 +16,12 @@
         <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
         <link rel="stylesheet" href="/resources/demos/style.css">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">      
+        <meta charset="UTF-8">
+
 
         <!-- JQUERY CDN -->
         <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
-
-        <!-- Bootstrap 4 -->
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
         <!-- Fontawesome  -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -156,7 +156,10 @@
                                     </button>
 
                                 </div>
-
+                                 <c:forEach items="${usuarios}" var="usuario" varStatus="status">
+                                <input id="getNumNot" type="text" hidden="false" value="${usuario.num_telefono}"/>
+                                <input id="getCorreoNot" type="text" hidden="false" value="${usuario.correo}"/>
+                                 </c:forEach>
                             </div>
                         </div>
                     </div>
@@ -190,8 +193,9 @@
                                                                 '${pago.nombre}',
                                                                 '${pago.apellido}',
                                                                 '${pago.tipo_usuario}',
-                                                                '${pago.fecha_solicitud}',
-                                                                '${pago.comentario}')"
+                                                                '${pago.semana_pago}',
+                                                                '${pago.comentario}',
+                                                                 '${pago.resolutivo}')"
                                                 data-toggle="modal" 
                                                 data-target="#ModalModificate" 
                                                 class="btn ml-3">
@@ -233,6 +237,7 @@
                                         <button id="btnGetUser" type="submit"  class="input-group-addon btn">
                                             <span class="fa fa-1x fa-search"></span>
                                         </button>
+                                        
                                     </div>
                                 </div>
                             </form>
@@ -267,10 +272,57 @@
                                 <br>
                                 <br>
                                 <div class="row form-group col-lg-12">
-                                    <div class="col-lg-2 col-md-2"></div>
-                                    <button class="btn btn-success btn-sm col-lg-3 col-md-6 ml-auto" id="btnAdd_aclaracion" type="submit">Guardar</button>
-                                    <button class="btn btn-success btn-sm col-lg-3 col-md-6  ml-auto" type="">Notificar</button>
-                                    <div class="col-lg-2 col-md-2"></div>
+
+                                    <button class="btn btn-success btn-sm col-lg-4 col-md-6 ml-auto" id="btnAdd_aclaracion" type="submit">Guardar</button>
+                                   
+
+                                </div>
+                            </form>
+                                <div class="row form-group col-lg-12">
+
+                                    
+                                    <button class="btn btn-success btn-sm col-lg-4 col-md-6  ml-auto" id="notificarNuevo">Notificar</button>
+
+                                </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+
+        <!-- Modal User register -->
+        <div id="ModalExitoso" aria-labelledby="mediumModalLabel" class="modal fade" role="dialog" tabindex="-1" aria-hidden="true" >
+
+            <div class="modal-dialog modal-md modal-dialog-centered">
+
+                <!-- Modal content-->
+                <div class="modal-content ">
+
+                    <div class="modal-header">
+                        <h4 class="modal-title">Notificación Enviada</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-center modal-body">
+
+                        <div class="form-group col-md-12 col-sm-12 justify-content-center">
+                            <form>
+                                <div class="row col-md-12 col-sm-12 justify-content-center text-center">
+
+                                    <label class="control-label col-md-10">Datos guardados con éxito</label>
+                                </div>
+                            </form>
+                            <br>
+                            <form>
+                                <div class="row form-group col-lg-12 justify-content-center" >
+                                    <button class="btn btn-success btn-sm col-lg-4 col-md-6 justify-content-center" id="aceptarExitoso" href="home.htm" type="submit">Aceptar</button>
                                 </div>
                             </form>
 
@@ -283,6 +335,49 @@
             </div>
 
         </div>
+
+  <!-- Modal User register -->
+        <div id="ModalNotificacion" aria-labelledby="mediumModalLabel" class="modal fade" role="dialog" tabindex="-1" aria-hidden="true" >
+
+            <div class="modal-dialog modal-md modal-dialog-centered">
+
+                <!-- Modal content-->
+                <div class="modal-content ">
+
+                    <div class="modal-header">
+                        <h4 class="modal-title">Notificación Enviada</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-center modal-body">
+
+                        <div class="form-group col-md-12 col-sm-12 justify-content-center">
+                            <form>
+                                <div class="row col-md-12 col-sm-12 justify-content-center text-center">
+
+                                    <label class="control-label col-md-10">Notificación enviada con éxito</label>
+                                </div>
+                            </form>
+                            <br>
+                            <form>
+                                <div class="row form-group col-lg-12 justify-content-center" >
+                                    <button class="btn btn-success btn-sm col-lg-4 col-md-6 justify-content-center" id="aceptarNotificacion" href="home.htm" type="submit">Aceptar</button>
+                                </div>
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+
 
         <!-- Modal Create for Modificate -->
         <div id="ModalModificate" aria-labelledby="mediumModalLabel" class="modal fade" role="dialog" tabindex="-1" aria-hidden="true" >
@@ -298,45 +393,91 @@
                     </div>
 
                     <div class="d-flex align-items-center justify-content-center modal-body">
-                        <form >
-                            <div class="form-group col-md-12 col-sm-12">
+                        <div class="form-group col-md-12 col-sm-12">
 
-                                <br>
-                                <div class="row col-md-12 col-sm-12">
-                                    <label id="txtNombre" class="control-label col-md-6">Nombres: </label>
-                                    <label id="nombreMod" class="control-label col-md-6"></label>
-                                </div>
-
-                                <div class="row col-md-12 col-sm-12">
-                                    <label id="txtApellido" class="control-label col-md-6">Apellidos: </label>
-                                    <label id="apellidoMod" class="control-label col-md-6"></label>
-                                </div>
-                                <br>
-                                <div class="row col-md-12 col-sm-12">
-                                    <label class="control-label col-md-6">Tipo de usuario:</label>
-                                    <select id="id_usuarioMod" type="text" class="form-control form-control-sm col-md-5" placeholder="" maxlength="100">Seleccionar</select>
-                                </div>
-                                <br>
-                                <div class="row col-md-12 col-sm-12">
-                                    <label class="control-label col-md-6">Semana de pago</label>
-                                    <input  id="semana_pagoMod" data-provide="datepicker" name="semana_pago" type="text" class="form-control form-control-sm col-md-5" >
-                                </div>
-                                <br>
-                                <div class="row col-md-12 col-sm-12">
-                                    <label class="control-label col-md-6">Comentarios</label>
-                                    <textarea class="form-control col-md-5" name="comentarios" id="comentarioMod" cols="30" rows="3"></textarea>
-                                </div>
-                                <br>
-                                <br>
-                              <!--  <div class="row form-group col-lg-12">
-                                    <div class="col-lg-2 col-md-2"></div>
-                                    <button class="btn btn-secondary btn-sm col-lg-3 col-md-4" type="">Guardar</button>
-                                    <button class="btn btn-success btn-sm col-lg-3 col-md-4 ml-auto" type="">Notificar</button>
-                                    <div class="col-lg-2 col-md-2"></div>
-                                </div>-->
+                            <br>
+                            <div class="row col-md-12 col-sm-12">
+                                <label id="txtNombre" class="control-label col-md-6">Nombres: </label>
+                                <label id="nombreMod" class="control-label col-md-6"></label>
                             </div>
-                        </form>
-                    </div>
+
+                            <div class="row col-md-12 col-sm-12">
+                                <label id="txtApellido" class="control-label col-md-6">Apellidos: </label>
+                                <label id="apellidoMod" class="control-label col-md-6"></label>
+                            </div>
+                            <br>
+                            <div class="row col-md-12 col-sm-12">
+                                <label class="control-label col-md-6">Tipo de usuario:</label>
+                                <select id="id_usuarioMod" type="text" class="form-control form-control-sm col-md-5" placeholder="" maxlength="100">Seleccionar</select>
+                            </div>
+                            <br>
+                            <div class="row col-md-12 col-sm-12">
+                                <label class="control-label col-md-6">Semana de pago</label>
+                                <input  id="semana_pagoMod" data-provide="datepicker" name="semana_pago" type="text" class="form-control form-control-sm col-md-5" >
+                            </div>
+                            <br>
+                            <div class="row col-md-12 col-sm-12">
+                                <label class="control-label col-md-6">Comentarios</label>
+                                <textarea class="form-control col-md-5" name="comentarios" id="comentarioMod" cols="30" rows="3"></textarea>
+                            </div>
+
+                            <br>
+                            <form enctype="multipart/form-data" id="form_upload_files" method="POST">  
+                                <!-- <form action="upload_resolutivo.htm" method="POST">-->
+
+                                <div class="row col-md-12 col-sm-12">
+                                    <label class="control-label col-md-6">Resolutivo</label>
+                                    <textarea class="form-control col-md-5" name="resolutivoMod" id="resolutivoMod" cols="30" rows="3"></textarea>
+
+                                </div>
+                                <div class="row col-md-12 col-sm-12" enctype="multipart/form-data">
+                                    <label class="control-label col-md-5">Adjuntar Archivos</label>
+                                    <button id="add_files" class="btn  btn-sm col-lg-4 col-md-6">
+                                        <span style="font-size: 150%">
+                                            <i class="fa fa-upload"></i>
+                                        </span>
+                                    </button>
+                                    <!--<button class="btn btn-success btn-sm col-lg-4 col-md-6 ml-auto" id="add_files">Agregar</button>-->
+                                </div>
+                                <div class="row col-md-12 col-sm-12">
+
+                                </div>
+                                <div class="row col-md-12 col-sm-12">
+                                    <div id="fileContainer">
+                                        <!--<input type="file" class="file" name="file">-->
+                                    </div>
+                                    <div id="fileContainerOld">
+                                        <c:forEach items="${docus}" var="docu" varStatus="status">
+                                            <a href="${docu.archivo}" target="_blank"><label>${docu.nombre_archivo}</label></a>
+                                        </c:forEach>
+                                    </div>
+
+                                </div>
+
+                                <br>
+                                <br>
+                                <div class="row form-group col-lg-12">
+
+                                    <button class="btn btn-success btn-sm col-lg-4 col-md-6 ml-auto" id="upload">Guardar</button>
+                                    <button class="btn btn-success btn-sm col-lg-4 col-md-6  ml-auto" id="notificarTelefono">Notificar</button>
+
+                                </div>
+                            </form>
+                           <!--<div class="row form-group col-lg-12">
+
+                                    
+                                   
+                                </div>-->
+
+
+                        </div>
+
+                    </div>     
+
+
+
+
+
 
                 </div>
 
@@ -353,6 +494,38 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
         <script>
+            
+                                                    //Add roles
+                                                   function getRoles() {
+                                                         
+                                                        console.log("roles_usuarios");
+                                                        
+
+
+
+                                                        $.ajax({
+                                                            method: "POST",
+                                                            url: "get_roles.htm",
+
+                                                        }).done(function (res) {
+                                                            console.log("Datos encontrados.");
+                                                            $("#tipo_usuarioNue").empty();
+                                                            var obj = JSON.parse(res);
+                                                            console.log(obj);
+
+
+                                                            $.each(obj, function (key, data) {
+
+                                                                $("#tipo_usuarioNue").append('<option value="' + data.id_rol + '">' + data.nombre_rol + '</option>');
+
+                                                            });
+
+                                                        });
+                                                    };
+    
+    
+    
+    
                                                     //Search button
                                                     $("#btnBuscar").submit(function (event) {
                                                         event.preventDefault();
@@ -366,6 +539,7 @@
                                                             data: parametros,
                                                             success: function () {
                                                                 console.log("SUCCESS");
+                                                                document.getElementById("getNum").value = $("#txtBuscar").val();
                                                             },
                                                             error: function (erorr) {
                                                                 console.log(erorr);
@@ -373,34 +547,105 @@
 
                                                         });
                                                     });
-                                                    
-                                                    $("#btnAdd").click(function (event) {
-                                                        event.preventDefault();
-                                                        console.log("roles_usuarios");
-                                                        event.preventDefault();
 
-                                                        
+                                                    //Search button
+                                                    $("#btnUpload_resolutivo").submit(function (event) {
+                                                        event.preventDefault();
+                                                        let parametros = {
+                                                            "resolutivoMod": $("#resolutivoMod").val()
+                                                        };
 
                                                         $.ajax({
-                                                            method: "POST",
-                                                            url: "get_roles.htm",
-                                                           
-                                                        }).done(function (res) {
-                                                            console.log("Datos encontrados.");
-                                                            $("#tipo_usuarioNue").empty();
-                                                            var obj = JSON.parse(res);
-                                                            console.log(obj);
-                                                            
-                                                               
-                                                            $.each(obj, function (key, data) {
-                                                                 
-                                                                $("#tipo_usuarioNue").append('<option value="' +data.id_rol + '">' + data.nombre_rol + '</option>');
+                                                            url: "upload_resolutivo.htm",
+                                                            type: "GET",
+                                                            data: parametros,
+                                                            success: function () {
+                                                                console.log("SUCCESS");
                                                                 
-                                                            });
+                                                            },
+                                                            error: function (erorr) {
+                                                                console.log(erorr);
+                                                            }
 
                                                         });
                                                     });
 
+
+
+                                                    //Upload_files
+                                                    $(document).ready(function () {
+                                                            getRoles();
+        
+                                                            $("#upload").click(function (event) {
+                                                            event.preventDefault();
+                                                            var f = $(this);
+                                                            var formData = new FormData(document.getElementById("form_upload_files"));
+                                                            //formData.append("file", "");
+
+                                                            $.ajax({
+                                                                type: "POST",
+                                                                url: "upload_files.htm",
+                                                                data: formData,
+                                                                contentType: false,
+                                                                processData: false,
+                                                                cache: false,
+                                                                /*beforeSend: function(xhr, settings) { 
+                                                                 xhr.setRequestHeader("Content-Type", "multipart/form-data;boundary=gc0p4Jq0M2Yt08jU534c0p"); 
+                                                                 settings.data = {name: "file", file: inputElement.files[0]};      
+                                                                 },*/
+                                                                success: function (result) {
+                                                                    console.log(result);
+                                                                    $('#ModalModificate').modal('toggle');
+                                                                    $('#ModalExitoso').modal('toggle');
+
+                                                                },
+                                                                error: function (result) {
+                                                                    console.log(result.responseText);
+                                                                }
+                                                            });
+                                                        });
+                                                    });
+
+                                                    var contador = 1;
+                                                    //add files
+                                                    $("#add_files").click(function (event) {
+                                                        event.preventDefault();
+                                                        if (contador < 3) {
+                                                            $("#fileContainer").append("<div class='row ' id='file_" + contador.toString() + "'><input type='file' class='col-sm-11 col-md-11' name='file' /><button onclick='remove_file(" + contador.toString() + ");' type='button' class='btn btn-sm col-lg-1 col-md-1'><span class='fa fa-times' style='color:red;'></span></button></div>");
+
+                                                            contador++;
+                                                        } else {
+                                                            alert("Has excedido el límite de archivos permitido");
+                                                        }
+                                                    });
+                                                    function remove_file(id_file) {
+                                                        $("#file_" + id_file).remove();
+                                                    }
+
+
+                                                    
+                                                    //Notifications
+                                                   $("#notificarTelefono").click(function (event) {
+                                                         event.preventDefault();
+                                                            if ($("#getNumNot").val() !== '' && $("#resolutivoMod").val() !== '')
+                                                            $.ajax({
+                                                                type: 'POST',
+                                                                url: 'http://yimicol2020.ddns.net:3000/sms_generic',
+                                                                crossDomain: true,
+                                                                //dataType: "text",
+                                                                data: {
+                                                                    'telefono': $("#getNumNot").val(),
+                                                                    'body': $("#resolutivoMod").val() // <-- the $ sign in the parameter name seems unusual, I would avoid it
+                                                                },
+                                                                success: function (msg) {
+                                                                    alert('wow' + msg);
+                                                                    if(msg === "Mensaje enviado"){
+                                                                        $('#ModalModificate').modal('toggle');
+                                                                        $('#ModalNotificacion').modal('toggle');
+                                                                    }
+                                                                }
+                                                            });
+                                                    }) 
 
                                                     //Search button for add aclaracion
                                                     $("#getUserForm").submit(function (event) {
@@ -417,13 +662,17 @@
                                                             console.log("Datos encontrados.");
                                                             var obj = JSON.parse(res);
                                                             console.log(obj);
+
                                                             document.getElementById("nombreNue").value = "";
                                                             document.getElementById("apellidoNue").value = "";
+                                                            
+                                                            
                                                             $.each(obj, function (key, data) {
                                                                 document.getElementById("nombreNue").value = data.nombre;
                                                                 document.getElementById("apellidoNue").value = data.apellido;
+                                                                
                                                             });
-
+                                                            //console.log($("#getNum").val());
                                                         });
                                                     });
 
@@ -438,13 +687,15 @@
                                                         $.ajax({
                                                             method: "POST",
                                                             url: "add_aclaracion.htm",
-                                                            data: frm
-                                                        }).done(function (res) {
-                                                            console.log("Datos encontrados.");
-                                                            var obj = JSON.parse(res);
-                                                            console.log(obj);
-
-
+                                                            data: frm,
+                                                            async: false,
+                                                            success: function (result) {
+                                                                $('#ModalCreate').modal('toggle');
+                                                                $('#ModalExitoso').modal('toggle');
+                                                            },
+                                                            error: function (result) {
+                                                                console.log(result.responseText);
+                                                            }
                                                         });
                                                     });
 
@@ -452,37 +703,39 @@
                                                     //Function for details button
                                                     var nombreInput = $("#nombreMod");//document.getElementById("nombreMod");
                                                     var apellidoInput = $("#apellidoMod");//document.getElementById("apellidoMod");
-                                                    var id_rolInput = $("#id_usuarioMod");// document.getElementById("id_usuarioMod");
+                                                    var id_usuarioInput = $("#id_usuarioMod");// document.getElementById("id_usuarioMod");
                                                     var semana_pagoInput = $("#semana_pagoMod");//document.getElementById("semana_pagoMod");
                                                     var comentarioInput = $("#comentarioMod");//document.getElementById("comentarioMod");
-
+                                                    var resolutivoInput = $("#resolutivoMod");
                                                     function setTextToInput(
                                                             nombre,
                                                             apellido,
                                                             tipo_usuario,
-                                                            fecha_solicitud,
-                                                            comentario
+                                                            semana_pago,
+                                                            comentario,
+                                                            resolutivo
                                                             ) {
 
                                                         nombreInput.text(nombre);
                                                         apellidoInput.text(apellido);
-                                                        id_rolInput.append(tipo_usuario);
-                                                        semana_pagoInput.val(fecha_solicitud);
+                                                        id_usuarioInput.append("<option val=" + tipo_usuario + " selected>" + tipo_usuario + "</option>");
+                                                        semana_pagoInput.val(semana_pago);
                                                         comentarioInput.val(comentario);
+                                                        resolutivoInput.val(resolutivo);
 
-                                                        console.log("VAL", comentario);
+                                                      
                                                     }
 
                                                     $(document).ready(function () {
                                                         $(function () {
                                                             $('#semana_pagoNue').datepicker({
                                                                 dateFormat: "yy-mm-dd",
-                                                                
+
                                                             });
                                                         });
 
 
-                                                      
+
 
 
                                                         //dataTable settings
@@ -512,11 +765,15 @@
                                                     });
 
         </script>
-    </head>
 
-</script>
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.js"></script>
-</body>
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.js"></script>
+
+        <!-- Bootstrap 4 -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+
+    </body>
 </html>

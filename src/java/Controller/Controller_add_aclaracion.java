@@ -6,6 +6,7 @@
 package Controller;
 
 import Model.ConnectBD;
+import Model.aclaraciones_usuarios;
 import Model.get_usuarios;
 import Model.rol_usuarios;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,6 +36,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class Controller_add_aclaracion {
 
     public int id;
+    public int id_aclaracion;
     
     private ConnectBD dbSource = null;
     ModelAndView mav = new ModelAndView();
@@ -186,6 +188,9 @@ public class Controller_add_aclaracion {
             } catch (Exception ex) {
                 System.err.println("Excepcion sp_registrar_aclaracion_pagos() - Controller_home : " + ex.getMessage());
             }
-   return new ModelAndView("redirect:/home.htm");
+        
+        mav.setViewName("home");
+
+        return mav;
 } 
     }

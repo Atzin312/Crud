@@ -15,7 +15,7 @@ public class ConnectBD {
         public DriverManagerDataSource conectar(){
         DriverManagerDataSource DS=new DriverManagerDataSource();
         DS.setDriverClassName("org.postgresql.Driver");
-        DS.setUrl("jdbc:postgresql://localhost:5432/pagos");
+        DS.setUrl("jdbc:postgresql://yimicol2020.ddns.net:5432/Migo_Usuarios");
         DS.setUsername("postgres");
         DS.setPassword("kioadmin");
         return DS;

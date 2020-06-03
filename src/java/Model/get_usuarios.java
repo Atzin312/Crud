@@ -13,11 +13,32 @@ public class get_usuarios {
     public int id_usuario;
     private String nombre;
     private String apellido;
+    private String num_telefono;
+    private String correo;
     
-     public get_usuarios(int id_usuario, String nombre, String apellido) {
+    
+    public String getNum_telefono() {
+        return num_telefono;
+    }
+
+    public void setNum_telefono(String num_telefono) {
+        this.num_telefono = num_telefono;
+    }
+
+    public String getCorreo() {
+        return correo;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
+    }
+  
+     public get_usuarios(int id_usuario, String nombre, String apellido, String num_telefono, String correo) {
         this.id_usuario = id_usuario;
         this.nombre = nombre;
         this.apellido = apellido;
+        this.num_telefono = num_telefono;
+        this.correo = correo;
     }
      public get_usuarios(){
          
