@@ -156,10 +156,10 @@
                                     </button>
 
                                 </div>
-                                 <c:forEach items="${usuarios}" var="usuario" varStatus="status">
-                                <input id="getNumNot" type="text" hidden="false" value="${usuario.num_telefono}"/>
-                                <input id="getCorreoNot" type="text" hidden="false" value="${usuario.correo}"/>
-                                 </c:forEach>
+                                <c:forEach items="${usuarios}" var="usuario" varStatus="status">
+                                    <input id="getNumNot" type="text" hidden="false" value="${usuario.num_telefono}"/>
+                                    <input id="getCorreoNot" type="text" hidden="false" value="${usuario.correo}"/>
+                                </c:forEach>
                             </div>
                         </div>
                     </div>
@@ -170,6 +170,7 @@
 
                             <thead class="thead-dark">
                                 <tr>
+                                    <th>Aclaración</th>
                                     <th>Fecha de solicitud</th>
                                     <th>Fecha resolutiva</th>
                                     <th>Nombre</th>
@@ -181,6 +182,7 @@
                             <tbody>
                                 <c:forEach items="${pagos}" var="pago" varStatus="status">
                                     <tr >
+                                        <td>${pago.id_aclaracion}</td>
                                         <td>${pago.fecha_solicitud}</td>
                                         <td>${pago.fecha_resolutiva}</td>
                                         <td>${pago.nombre}</td>
@@ -195,7 +197,8 @@
                                                                 '${pago.tipo_usuario}',
                                                                 '${pago.semana_pago}',
                                                                 '${pago.comentario}',
-                                                                 '${pago.resolutivo}')"
+                                                                '${pago.resolutivo}',
+                                                                '${pago.id_aclaracion}')"
                                                 data-toggle="modal" 
                                                 data-target="#ModalModificate" 
                                                 class="btn ml-3">
@@ -237,7 +240,7 @@
                                         <button id="btnGetUser" type="submit"  class="input-group-addon btn">
                                             <span class="fa fa-1x fa-search"></span>
                                         </button>
-                                        
+
                                     </div>
                                 </div>
                             </form>
@@ -274,16 +277,11 @@
                                 <div class="row form-group col-lg-12">
 
                                     <button class="btn btn-success btn-sm col-lg-4 col-md-6 ml-auto" id="btnAdd_aclaracion" type="submit">Guardar</button>
-                                   
+                                    <button class="btn btn-success btn-sm col-lg-4 col-md-6  ml-auto" >Notificar</button>
 
                                 </div>
                             </form>
-                                <div class="row form-group col-lg-12">
-
-                                    
-                                    <button class="btn btn-success btn-sm col-lg-4 col-md-6  ml-auto" id="notificarNuevo">Notificar</button>
-
-                                </div>
+                            
                         </div>
 
                     </div>
@@ -336,7 +334,7 @@
 
         </div>
 
-  <!-- Modal User register -->
+        <!-- Modal User register -->
         <div id="ModalNotificacion" aria-labelledby="mediumModalLabel" class="modal fade" role="dialog" tabindex="-1" aria-hidden="true" >
 
             <div class="modal-dialog modal-md modal-dialog-centered">
@@ -387,8 +385,12 @@
                 <!-- Modal content-->
                 <div class="modal-content ">
 
-                    <div class="modal-header">
-                        <h4 class="modal-title">Detalles aclaracion de pago</h4>
+                    <div class="modal-header"> 
+                      
+                            
+                        <br>
+                        <h4 id="getId_aclaracion"></h4>
+                        <input  id="id_aclaracion" name="id_aclaracion" hidden="true" type="text" class="form-control form-control-sm col-md-8" >
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
 
@@ -397,39 +399,40 @@
 
                             <br>
                             <div class="row col-md-12 col-sm-12">
-                                <label id="txtNombre" class="control-label col-md-6">Nombres: </label>
-                                <label id="nombreMod" class="control-label col-md-6"></label>
+                                <label id="txtNombre" class="control-label col-md-4">Nombres: </label>
+                                <label id="nombreMod" class="control-label col-md-8"></label>
                             </div>
 
                             <div class="row col-md-12 col-sm-12">
-                                <label id="txtApellido" class="control-label col-md-6">Apellidos: </label>
-                                <label id="apellidoMod" class="control-label col-md-6"></label>
+                                <label id="txtApellido" class="control-label col-md-4">Apellidos: </label>
+                                <label id="apellidoMod" class="control-label col-md-8"></label>
                             </div>
                             <br>
                             <div class="row col-md-12 col-sm-12">
-                                <label class="control-label col-md-6">Tipo de usuario:</label>
-                                <select id="id_usuarioMod" type="text" class="form-control form-control-sm col-md-5" placeholder="" maxlength="100">Seleccionar</select>
+                                <label class="control-label col-md-4">Tipo de usuario:</label>
+                                <select id="id_usuarioMod" type="text" class="form-control form-control-sm col-md-8" placeholder="" maxlength="100">Seleccionar</select>
                             </div>
                             <br>
                             <div class="row col-md-12 col-sm-12">
-                                <label class="control-label col-md-6">Semana de pago</label>
-                                <input  id="semana_pagoMod" data-provide="datepicker" name="semana_pago" type="text" class="form-control form-control-sm col-md-5" >
+                                <label class="control-label col-md-4">Semana de pago</label>
+                                <input  id="semana_pagoMod" data-provide="datepicker" name="semana_pago" type="text" class="form-control form-control-sm col-md-8" >
                             </div>
                             <br>
                             <div class="row col-md-12 col-sm-12">
-                                <label class="control-label col-md-6">Comentarios</label>
-                                <textarea class="form-control col-md-5" name="comentarios" id="comentarioMod" cols="30" rows="3"></textarea>
+                                <label class="control-label col-md-4">Comentarios</label>
+                                <textarea class="form-control col-md-8" rows="10" cols="30" name="comentarios" id="comentarioMod" cols="30" rows="3"></textarea>
                             </div>
 
                             <br>
-                            <form enctype="multipart/form-data" id="form_upload_files" method="POST">  
+<!--                            <form enctype="multipart/form-data" id="form_upload_files" method="POST">  -->
                                 <!-- <form action="upload_resolutivo.htm" method="POST">-->
-
+                                
                                 <div class="row col-md-12 col-sm-12">
-                                    <label class="control-label col-md-6">Resolutivo</label>
-                                    <textarea class="form-control col-md-5" name="resolutivoMod" id="resolutivoMod" cols="30" rows="3"></textarea>
+                                    <label class="control-label col-md-4">Resolutivo</label>
+                                    <textarea class="form-control col-md-8" rows="10" cols="30" name="resolutivoMod" id="resolutivoMod" cols="30" rows="3"></textarea>
 
                                 </div>
+<!--                                </form>-->
                                 <div class="row col-md-12 col-sm-12" enctype="multipart/form-data">
                                     <label class="control-label col-md-5">Adjuntar Archivos</label>
                                     <button id="add_files" class="btn  btn-sm col-lg-4 col-md-6">
@@ -443,9 +446,12 @@
 
                                 </div>
                                 <div class="row col-md-12 col-sm-12">
-                                    <div id="fileContainer">
-                                        <!--<input type="file" class="file" name="file">-->
-                                    </div>
+                                    <!--<div id="fileContainer">-->
+                                    <form id="form_file1" enctype="multipart/form-data" method="POST"><input type="file" class="file" id="file1" name="file"></form>
+                                    <form id="form_file2" enctype="multipart/form-data" method="POST"><input type="file" class="file" id="file2" name="file"></form>
+                                    <form id="form_file3" enctype="multipart/form-data" method="POST"><input type="file" class="file" id="file3" name="file"></form>
+                                       
+                                    <!--</div>-->
                                     <div id="fileContainerOld">
                                         <c:forEach items="${docus}" var="docu" varStatus="status">
                                             <a href="${docu.archivo}" target="_blank"><label>${docu.nombre_archivo}</label></a>
@@ -462,12 +468,12 @@
                                     <button class="btn btn-success btn-sm col-lg-4 col-md-6  ml-auto" id="notificarTelefono">Notificar</button>
 
                                 </div>
-                            </form>
-                           <!--<div class="row form-group col-lg-12">
-
+                            
+                            <!--<div class="row form-group col-lg-12">
+ 
+                                     
                                     
-                                   
-                                </div>-->
+                                 </div>-->
 
 
                         </div>
@@ -494,12 +500,12 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
         <script>
-            
+
                                                     //Add roles
-                                                   function getRoles() {
-                                                         
+                                                    function getRoles() {
+
                                                         console.log("roles_usuarios");
-                                                        
+
 
 
 
@@ -521,11 +527,12 @@
                                                             });
 
                                                         });
-                                                    };
-    
-    
-    
-    
+                                                    }
+                                                    ;
+
+
+
+
                                                     //Search button
                                                     $("#btnBuscar").submit(function (event) {
                                                         event.preventDefault();
@@ -547,7 +554,15 @@
 
                                                         });
                                                     });
-
+                                                    
+                                                   
+                                                      
+                                                  
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
                                                     //Search button
                                                     $("#btnUpload_resolutivo").submit(function (event) {
                                                         event.preventDefault();
@@ -561,7 +576,7 @@
                                                             data: parametros,
                                                             success: function () {
                                                                 console.log("SUCCESS");
-                                                                
+
                                                             },
                                                             error: function (erorr) {
                                                                 console.log(erorr);
@@ -574,26 +589,33 @@
 
                                                     //Upload_files
                                                     $(document).ready(function () {
-                                                            getRoles();
-        
-                                                            $("#upload").click(function (event) {
+                                                        getRoles();
+
+                                                        $("#upload").click(function (event) {
                                                             event.preventDefault();
                                                             var f = $(this);
-                                                            var formData = new FormData(document.getElementById("form_upload_files"));
-                                                            //formData.append("file", "");
+                                                            //var formData = new FormData(document.getElementById("form_upload_files"));
+                                                            var formDataFile1 = new FormData(document.getElementById("form_file1"));
+                                                            formDataFile1.append("id_aclaracion", $("#id_aclaracion").val());
+                                                            
+                                                            var formDataFile2 = new FormData(document.getElementById("form_file2"));
+                                                            formDataFile2.append("id_aclaracion", $("#id_aclaracion").val());
+                                                            
+                                                            var formDataFile3 = new FormData(document.getElementById("form_file3"));
+                                                            formDataFile3.append("id_aclaracion", $("#id_aclaracion").val());
 
-                                                            $.ajax({
+                                                            /*$.ajax({
                                                                 type: "POST",
                                                                 url: "upload_files.htm",
                                                                 data: formData,
                                                                 contentType: false,
                                                                 processData: false,
-                                                                cache: false,
+                                                                cache: false,*/
                                                                 /*beforeSend: function(xhr, settings) { 
                                                                  xhr.setRequestHeader("Content-Type", "multipart/form-data;boundary=gc0p4Jq0M2Yt08jU534c0p"); 
                                                                  settings.data = {name: "file", file: inputElement.files[0]};      
                                                                  },*/
-                                                                success: function (result) {
+                                                               /* success: function (result) {
                                                                     console.log(result);
                                                                     $('#ModalModificate').modal('toggle');
                                                                     $('#ModalExitoso').modal('toggle');
@@ -602,13 +624,86 @@
                                                                 error: function (result) {
                                                                     console.log(result.responseText);
                                                                 }
+                                                            });*/
+                                                            
+                                                             $.ajax({
+                                                                type: "POST",
+                                                                url: "http://yimicol2020.ddns.net:3001/aclaracion_pagos_doc1",
+                                                               
+                                                                contentType: false,
+                                                                processData: false,
+                                                                cache: false,
+                                                                data: formDataFile1,
+                                                                /*beforeSend: function(xhr, settings) { 
+                                                                 xhr.setRequestHeader("Content-Type", "multipart/form-data;boundary=gc0p4Jq0M2Yt08jU534c0p"); 
+                                                                 settings.data = {name: "file", file: inputElement.files[0]};      
+                                                                 },*/
+                                                                success: function (result) {
+                                                                    console.log(result);
+                                                                    /*$('#ModalModificate').modal('toggle');
+                                                                    $('#ModalExitoso').modal('toggle');*/
+
+                                                                },
+                                                                error: function (result) {
+                                                                    console.log(result.responseText);
+                                                                }
                                                             });
+                                                            
+                                                            
+                                                            $.ajax({
+                                                                type: "POST",
+                                                                url: "http://yimicol2020.ddns.net:3001/aclaracion_pagos_doc2",
+                                                               
+                                                                contentType: false,
+                                                                processData: false,
+                                                                cache: false,
+                                                                data: formDataFile2,
+                                                                /*beforeSend: function(xhr, settings) { 
+                                                                 xhr.setRequestHeader("Content-Type", "multipart/form-data;boundary=gc0p4Jq0M2Yt08jU534c0p"); 
+                                                                 settings.data = {name: "file", file: inputElement.files[0]};      
+                                                                 },*/
+                                                                success: function (result) {
+                                                                    console.log(result);
+                                                                    /*$('#ModalModificate').modal('toggle');
+                                                                    $('#ModalExitoso').modal('toggle');*/
+
+                                                                },
+                                                                error: function (result) {
+                                                                    console.log(result.responseText);
+                                                                }
+                                                            });
+                                                            
+                                                            
+                                                            $.ajax({
+                                                                type: "POST",
+                                                                url: "http://yimicol2020.ddns.net:3001/aclaracion_pagos_doc3",
+                                                               
+                                                                contentType: false,
+                                                                processData: false,
+                                                                cache: false,
+                                                                data: formDataFile3,
+                                                                /*beforeSend: function(xhr, settings) { 
+                                                                 xhr.setRequestHeader("Content-Type", "multipart/form-data;boundary=gc0p4Jq0M2Yt08jU534c0p"); 
+                                                                 settings.data = {name: "file", file: inputElement.files[0]};      
+                                                                 },*/
+                                                                success: function (result) {
+                                                                    console.log(result);
+                                                                    /*$('#ModalModificate').modal('toggle');
+                                                                    $('#ModalExitoso').modal('toggle');*/
+
+                                                                },
+                                                                error: function (result) {
+                                                                    console.log(result.responseText);
+                                                                }
+                                                            });
+                                                            
+                                                           
                                                         });
                                                     });
 
                                                     var contador = 1;
                                                     //add files
-                                                    $("#add_files").click(function (event) {
+                                                    /*$("#add_files").click(function (event) {
                                                         event.preventDefault();
                                                         if (contador < 3) {
                                                             $("#fileContainer").append("<div class='row ' id='file_" + contador.toString() + "'><input type='file' class='col-sm-11 col-md-11' name='file' /><button onclick='remove_file(" + contador.toString() + ");' type='button' class='btn btn-sm col-lg-1 col-md-1'><span class='fa fa-times' style='color:red;'></span></button></div>");
@@ -617,17 +712,17 @@
                                                         } else {
                                                             alert("Has excedido el límite de archivos permitido");
                                                         }
-                                                    });
+                                                    });*/
                                                     function remove_file(id_file) {
                                                         $("#file_" + id_file).remove();
                                                     }
 
 
-                                                    
+
                                                     //Notifications
-                                                   $("#notificarTelefono").click(function (event) {
-                                                         event.preventDefault();
-                                                            if ($("#getNumNot").val() !== '' && $("#resolutivoMod").val() !== '')
+                                                    $("#notificarTelefono").click(function (event) {
+                                                        event.preventDefault();
+                                                        if ($("#getNumNot").val() !== '' && $("#resolutivoMod").val() !== '')
                                                             $.ajax({
                                                                 type: 'POST',
                                                                 url: 'http://yimicol2020.ddns.net:3000/sms_generic',
@@ -639,13 +734,30 @@
                                                                 },
                                                                 success: function (msg) {
                                                                     alert('wow' + msg);
-                                                                    if(msg === "Mensaje enviado"){
-                                                                        $('#ModalModificate').modal('toggle');
-                                                                        $('#ModalNotificacion').modal('toggle');
+                                                                    if (msg === "Mensaje enviado") {
+                                                                        
                                                                     }
                                                                 }
                                                             });
-                                                    }) 
+                                                        if ($("#getCorreoNot").val() !== '' && $("#resolutivoMod").val() !== '')
+                                                            $.ajax({
+                                                                type: 'POST',
+                                                                url: 'http://yimicol2020.ddns.net:3000/mail_aclaracion',
+                                                                crossDomain: true,
+                                                                //dataType: "text",
+                                                                data: {
+                                                                    'correo': $("#getNumNot").val(),
+                                                                    'bodyco': 'Resolutivo ' + $("#resolutivoMod").val() // <-- the $ sign in the parameter name seems unusual, I would avoid it
+                                                                },
+                                                                success: function (msg) {
+                                                                    alert('wow' + msg);
+                                                                    
+                                                                }
+                                                            });
+                                                            $('#ModalModificate').modal('toggle');
+                                                            $('#ModalNotificacion').modal('toggle');
+
+                                                    })
 
                                                     //Search button for add aclaracion
                                                     $("#getUserForm").submit(function (event) {
@@ -665,12 +777,12 @@
 
                                                             document.getElementById("nombreNue").value = "";
                                                             document.getElementById("apellidoNue").value = "";
-                                                            
-                                                            
+
+
                                                             $.each(obj, function (key, data) {
                                                                 document.getElementById("nombreNue").value = data.nombre;
                                                                 document.getElementById("apellidoNue").value = data.apellido;
-                                                                
+
                                                             });
                                                             //console.log($("#getNum").val());
                                                         });
@@ -707,13 +819,18 @@
                                                     var semana_pagoInput = $("#semana_pagoMod");//document.getElementById("semana_pagoMod");
                                                     var comentarioInput = $("#comentarioMod");//document.getElementById("comentarioMod");
                                                     var resolutivoInput = $("#resolutivoMod");
+                                                    var id_aclaracionInput = $("#getId_aclaracion");
+                                                    
+                                                    //input_oculto
+                                                    var id_aclaraciones   = $("#id_aclaracion");
                                                     function setTextToInput(
                                                             nombre,
                                                             apellido,
                                                             tipo_usuario,
                                                             semana_pago,
                                                             comentario,
-                                                            resolutivo
+                                                            resolutivo,
+                                                            id_aclaracion
                                                             ) {
 
                                                         nombreInput.text(nombre);
@@ -722,8 +839,24 @@
                                                         semana_pagoInput.val(semana_pago);
                                                         comentarioInput.val(comentario);
                                                         resolutivoInput.val(resolutivo);
+                                                        id_aclaracionInput.text("Detalles de aclaracion de pago Aclaracion: "+id_aclaracion);
+                                                        id_aclaraciones.val(id_aclaracion);
+                                                        
+                                                          $.ajax({
+                                                            url: "get_docu.htm",
+                                                            type: "POST",
+                                                            data: {"getId_aclaracion" : id_aclaracion},
+                                                            success: function () {
+                                                                console.log("SUCCESS");
+                                                               
+                                                            },
+                                                            error: function (erorr) {
+                                                                console.log(erorr);
+                                                            }
 
-                                                      
+                                                        });
+                                                        
+
                                                     }
 
                                                     $(document).ready(function () {

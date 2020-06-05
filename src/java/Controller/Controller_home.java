@@ -59,6 +59,7 @@ public class Controller_home {
     public int id;
     public int id_aclaracion;
     public int id_documento;
+    public int id_aclara;
 
     //Ruta para enviar los archivos
     private static String UPLOADED_FOLDER = "uploads/files";
@@ -187,29 +188,39 @@ public class Controller_home {
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
-            System.out.println("SEMANA PAGO "+pagos.get(5).getSemana_pago());
+            System.out.println("ID ACLA " + id_aclaracion);
+            //System.out.println("SEMANA PAGO "+pagos.get(5).getSemana_pago());
 //        System.out.println("ID 5ta ACLARACION "+pagos.get(5).getId_aclaracion());
 //            System.out.println("ID ACLARACION " + id_aclaracion);
             mav.addObject("pagos", pagos);
-
+       
         }
         mav.setViewName("home");
-        
-        List<get_documento> docus = new ArrayList<>();
+        return mav;
+       
+    }
+
+     @RequestMapping("/get_docu")
+    public ModelAndView get_docu(HttpServletRequest request/*2*/) throws SQLException, MalformedURLException, IOException {
+         List<get_documento> docus = new ArrayList<>();
         String sql6 = "{call sp_get_documentos_aclaracion(?)}";
-        try (Connection dbConnection = dbSource.conectar().getConnection();
-                CallableStatement newService = dbConnection.prepareCall(sql6);) {
+        String getId_aclaracion = request.getParameter("getId_aclaracion");
+        id_aclara = Integer.parseInt(request.getParameter("getId_aclaracion"));
+        System.out.println("GETID_ACLARACION"+id_aclara);
+        try (Connection dbConnection6 = dbSource.conectar().getConnection();
+                CallableStatement newService6 = dbConnection6.prepareCall(sql6);) {
 
-            newService.setInt(1, id_aclaracion);
-            newService.execute();
-            System.out.println(newService);
+            newService6.setInt(1, id_aclara);
+            newService6.execute();
+            System.out.println(newService6);
 
-            try (ResultSet servicesRs = (ResultSet) newService.getResultSet();) {
+            try (ResultSet servicesRs = (ResultSet) newService6.getResultSet();) {
                 System.out.println("RESPONSE:" + servicesRs);
                 while (servicesRs.next()) {
                     get_documento docu = new get_documento();
-                    docu.setId_aclaracion(servicesRs.getInt(1));
-                    docu.setId_documento(servicesRs.getInt(2));
+                    
+                    docu.setId_documento(servicesRs.getInt(1));
+                    docu.setId_aclaracion(servicesRs.getInt(2));
                     docu.setId_tipo_documento(servicesRs.getInt(3));
                     docu.setTipo_documento(servicesRs.getString(4));
                     docu.setArchivo(servicesRs.getString(5));
@@ -231,8 +242,8 @@ public class Controller_home {
                     
                     docus.add(docu);
 //                    Add value to ID_DOCUMENTO
-                    id_documento = servicesRs.getInt(2);
-
+                    id_documento = servicesRs.getInt(1);
+                    
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -240,12 +251,13 @@ public class Controller_home {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-
-        System.out.println("ID DOCUMENTO " + id_documento);
+        
         mav.addObject("docus", docus);
-        
-        
+        //System.out.println("ID 1 documento "+docus.get(1).getId_documento());
+        System.out.println("ID DOCUMENTO Aparte " + id_documento);
 
+        
+        mav.setViewName("home");
         return mav;
     }
 
