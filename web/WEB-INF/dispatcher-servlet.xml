@@ -27,6 +27,7 @@
                  <prop key="upload_resolutivo.htm">Controller_home</prop>
                  <prop key="upload_files.htm">Controller_home</prop>  
                 <prop key="get_docu.htm">Controller_home</prop>  
+                  <prop key="delete_docu.htm">Controller_home</prop>  
             </props>
         </property>
     </bean>

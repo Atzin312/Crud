@@ -3,6 +3,7 @@
     Author     : atzin
 --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -31,6 +32,13 @@
             .pac-container {
                 z-index: 100000;
             }
+            .modal-backdrop {
+                visibility: hidden !important;
+            }
+            .modal.in {
+                background-color: rgba(0,0,0,0.5);
+            }
+            
         </style>
     </head>
 
@@ -198,7 +206,7 @@
                                                                 '${pago.semana_pago}',
                                                                 '${pago.comentario}',
                                                                 '${pago.resolutivo}',
-                                                                '${pago.id_aclaracion}')"
+                                                                ${pago.id_aclaracion})"
                                                 data-toggle="modal" 
                                                 data-target="#ModalModificate" 
                                                 class="btn ml-3">
@@ -305,7 +313,7 @@
 
                     <div class="modal-header">
                         <h4 class="modal-title">Notificación Enviada</h4>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <button type="button" class="close" data-dismiss="modal" data-backdrop="false">&times;</button>
                     </div>
 
                     <div class="d-flex align-items-center justify-content-center modal-body">
@@ -333,6 +341,48 @@
             </div>
 
         </div>
+        
+        
+        
+        
+        <!-- Modal User register -->
+        <div id="ModalDocumento" aria-labelledby="mediumModalLabel" class="modal fade" role="dialog" tabindex="-1" aria-hidden="true" >
+
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+
+                <!-- Modal content-->
+                <div class="modal-content ">
+
+                    <div class="modal-header">
+                        <h4 class="modal-title">Aclaracion de Pagos</h4>
+                        <button type="button" class="close" data-dismiss="modal" data-backdrop="false" >&times;</button>
+                    </div>
+
+                   <div class="d-flex align-items-center justify-content-center modal-body">
+                        <div class="col-md-10">
+                            <iframe width="100%" height="400px" id="iframe_documento"></iframe>
+                        </div>
+                        <div class="col-md-1">
+                            <div class="row col-md-12">
+                                <a id="btn_download_doc" class="btn btn-sm btn-success" href="" download="ACLARACION.pdf "><span class="fa fa-1x fa-download"></span></a>
+                            </div>
+                            <br>
+                            <div class="row col-md-12">
+                                <button id="btn_remove_doc" class="btn btn-sm btn-danger" data-dismiss="modal"><span class="fa fa-1x fa-trash"></span></button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+       </div>
+
+        
+        
+        
+        
+        
 
         <!-- Modal User register -->
         <div id="ModalNotificacion" aria-labelledby="mediumModalLabel" class="modal fade" role="dialog" tabindex="-1" aria-hidden="true" >
@@ -344,7 +394,7 @@
 
                     <div class="modal-header">
                         <h4 class="modal-title">Notificación Enviada</h4>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <button type="button" class="close" data-dismiss="modal" data-backdrop="false">&times;</button>
                     </div>
 
                     <div class="d-flex align-items-center justify-content-center modal-body">
@@ -391,7 +441,7 @@
                         <br>
                         <h4 id="getId_aclaracion"></h4>
                         <input  id="id_aclaracion" name="id_aclaracion" hidden="true" type="text" class="form-control form-control-sm col-md-8" >
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <button type="button" class="close" data-dismiss="modal" data-backdrop="false">&times;</button>
                     </div>
 
                     <div class="d-flex align-items-center justify-content-center modal-body">
@@ -447,18 +497,16 @@
                                 </div>
                                 <div class="row col-md-12 col-sm-12">
                                     <!--<div id="fileContainer">-->
-                                    <form id="form_file1" enctype="multipart/form-data" method="POST"><input type="file" class="file" id="file1" name="file"></form>
-                                    <form id="form_file2" enctype="multipart/form-data" method="POST"><input type="file" class="file" id="file2" name="file"></form>
-                                    <form id="form_file3" enctype="multipart/form-data" method="POST"><input type="file" class="file" id="file3" name="file"></form>
-                                       
+                                    <form id="form_file1" enctype="multipart/form-data" method="POST"><input type="file" class="file"  name="file"></form>
+                                    <form id="form_file2" enctype="multipart/form-data" method="POST"><input type="file" class="file"  name="file"></form>
+                                    <form id="form_file3" enctype="multipart/form-data" method="POST"><input type="file" class="file"  name="file"></form>
                                     <!--</div>-->
-                                    <div id="fileContainerOld">
-                                        <c:forEach items="${docus}" var="docu" varStatus="status">
-                                            <a href="${docu.archivo}" target="_blank"><label>${docu.nombre_archivo}</label></a>
-                                        </c:forEach>
-                                    </div>
-
                                 </div>
+                                <div id="fileContainerOld" class="row col-md-12 col-sm-12">
+                                    
+                                </div>
+
+                                
 
                                 <br>
                                 <br>
@@ -500,7 +548,14 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
         <script>
-
+                                                     
+                                                    $(document).on('hidden.bs.modal', function (event) {
+                                                        if ($('.modal:visible').length) {
+                                                          $('body').addClass('modal-open');
+                                                        }
+                                                    });
+                                                      
+                                                      
                                                     //Add roles
                                                     function getRoles() {
 
@@ -511,7 +566,7 @@
 
                                                         $.ajax({
                                                             method: "POST",
-                                                            url: "get_roles.htm",
+                                                            url: "get_roles.htm"
 
                                                         }).done(function (res) {
                                                             console.log("Datos encontrados.");
@@ -527,8 +582,7 @@
                                                             });
 
                                                         });
-                                                    }
-                                                    ;
+                                                    };
 
 
 
@@ -557,9 +611,7 @@
                                                     
                                                    
                                                       
-                                                  
-                                                    
-                                                    
+                                                 
                                                     
                                                     
                                                     
@@ -576,7 +628,7 @@
                                                             data: parametros,
                                                             success: function () {
                                                                 console.log("SUCCESS");
-
+                                                                 window.location.reload(true);
                                                             },
                                                             error: function (erorr) {
                                                                 console.log(erorr);
@@ -585,12 +637,49 @@
                                                         });
                                                     });
 
-
+                                                    $(".modal").on("shown.bs.modal", function () {
+                                                        if ($(".modal-backdrop").length > 1) {
+                                                            $(".modal-backdrop").not(':first').remove();
+                                                        }
+                                                    })
 
                                                     //Upload_files
                                                     $(document).ready(function () {
                                                         getRoles();
 
+                                                       
+                                                        $(function () {
+                                                            $('#semana_pagoNue').datepicker({
+                                                                dateFormat: "yy-mm-dd"
+
+                                                            });
+                                                        });
+
+
+
+
+
+                                                        //dataTable settings
+                                                        $('#dataTable').DataTable({
+                                                            responsive: true,
+                                                            language: {
+                                                                "search": "Nombre de usuario",
+                                                                "lengthMenu": "Mostrar _MENU_ registros por página",
+                                                                "zeroRecords": "Sin resultados",
+                                                                "info": "Mostrando página _PAGE_ de _PAGES_",
+                                                                "infoEmpty": "No se encontrarón registros",
+                                                                "infoFiltered": "(Filtrado desde el total de registros _MAX_)",
+                                                                "paginate": {
+                                                                    "first": "Primera",
+                                                                    "last": "Última",
+                                                                    "next": "Siguiente",
+                                                                    "previous": "Anterior"
+                                                                }
+                                                            }
+                                                        });
+
+
+                                                        //Upload decesive and documents
                                                         $("#upload").click(function (event) {
                                                             event.preventDefault();
                                                             var f = $(this);
@@ -604,18 +693,17 @@
                                                             var formDataFile3 = new FormData(document.getElementById("form_file3"));
                                                             formDataFile3.append("id_aclaracion", $("#id_aclaracion").val());
 
-                                                            /*$.ajax({
+                                                            $.ajax({
                                                                 type: "POST",
-                                                                url: "upload_files.htm",
-                                                                data: formData,
-                                                                contentType: false,
-                                                                processData: false,
-                                                                cache: false,*/
-                                                                /*beforeSend: function(xhr, settings) { 
-                                                                 xhr.setRequestHeader("Content-Type", "multipart/form-data;boundary=gc0p4Jq0M2Yt08jU534c0p"); 
-                                                                 settings.data = {name: "file", file: inputElement.files[0]};      
-                                                                 },*/
-                                                               /* success: function (result) {
+                                                                url: "upload_resolutivo.htm",
+                                                                data: {
+                                                                    "resolutivoMod": $("#resolutivoMod").val(),
+                                                                    "getId_aclaracion" : $("#id_aclaracion").val()
+                                                                },
+                                                                
+                                                                
+                                                               
+                                                                success: function (result) {
                                                                     console.log(result);
                                                                     $('#ModalModificate').modal('toggle');
                                                                     $('#ModalExitoso').modal('toggle');
@@ -624,7 +712,7 @@
                                                                 error: function (result) {
                                                                     console.log(result.responseText);
                                                                 }
-                                                            });*/
+                                                            });
                                                             
                                                              $.ajax({
                                                                 type: "POST",
@@ -642,6 +730,7 @@
                                                                     console.log(result);
                                                                     /*$('#ModalModificate').modal('toggle');
                                                                     $('#ModalExitoso').modal('toggle');*/
+                                                                    window.location.reload(true);
 
                                                                 },
                                                                 error: function (result) {
@@ -666,6 +755,7 @@
                                                                     console.log(result);
                                                                     /*$('#ModalModificate').modal('toggle');
                                                                     $('#ModalExitoso').modal('toggle');*/
+                                                                    window.location.reload(true);
 
                                                                 },
                                                                 error: function (result) {
@@ -688,6 +778,7 @@
                                                                  },*/
                                                                 success: function (result) {
                                                                     console.log(result);
+                                                                    window.location.reload(true);
                                                                     /*$('#ModalModificate').modal('toggle');
                                                                     $('#ModalExitoso').modal('toggle');*/
 
@@ -696,7 +787,7 @@
                                                                     console.log(result.responseText);
                                                                 }
                                                             });
-                                                            
+                                                          
                                                            
                                                         });
                                                     });
@@ -713,8 +804,29 @@
                                                             alert("Has excedido el límite de archivos permitido");
                                                         }
                                                     });*/
-                                                    function remove_file(id_file) {
-                                                        $("#file_" + id_file).remove();
+                                                    //Remove Files
+                                                    function remove_file(id_file_html,id_documento) {
+                                                        
+                                                         $.ajax({
+                                                            url: "delete_docu.htm",
+                                                            type: "POST",
+                                                            data: {
+                                                                "getId_aclaracion" : $("#id_aclaracion").val(),
+                                                                "getId_documento" : id_documento
+                                                            },
+                                                            success: function () {
+                                                                console.log("SUCCESS");
+                                                                $("#file_" + id_file_html).remove();
+                                                                $("#btn_remove_" + id_file_html).remove();
+                                                               
+                                                            },
+                                                            error: function (erorr) {
+                                                                console.log(erorr);
+                                                            }
+
+                                                        });
+                                                        
+                                                        
                                                     }
 
 
@@ -747,7 +859,12 @@
                                                                 //dataType: "text",
                                                                 data: {
                                                                     'correo': $("#getNumNot").val(),
-                                                                    'bodyco': 'Resolutivo ' + $("#resolutivoMod").val() // <-- the $ sign in the parameter name seems unusual, I would avoid it
+                                                                    'bodyco': 'Resolutivo ' + $("#resolutivoMod").val(),
+                                                                    'tipoco': 'Tipo de Usuario ' + $("#id_usuarioMod").val(),
+                                                                    'semanaco': 'Semana de pago ' + $("#semana_pagoMod").val(),
+                                                                    'comentarioco': 'Comentario ' + $("#comentarioMod").val(),
+                                                                    'id_aclaracionco': 'Id aclaración ' + $("#getId_aclaracion").val(),
+                                                                    // <-- the $ sign in the parameter name seems unusual, I would avoid it
                                                                 },
                                                                 success: function (msg) {
                                                                     alert('wow' + msg);
@@ -757,7 +874,7 @@
                                                             $('#ModalModificate').modal('toggle');
                                                             $('#ModalNotificacion').modal('toggle');
 
-                                                    })
+                                                    });
 
                                                     //Search button for add aclaracion
                                                     $("#getUserForm").submit(function (event) {
@@ -774,10 +891,10 @@
                                                             console.log("Datos encontrados.");
                                                             var obj = JSON.parse(res);
                                                             console.log(obj);
-
+                                                            
                                                             document.getElementById("nombreNue").value = "";
                                                             document.getElementById("apellidoNue").value = "";
-
+                                                            location.reload();
 
                                                             $.each(obj, function (key, data) {
                                                                 document.getElementById("nombreNue").value = data.nombre;
@@ -804,6 +921,7 @@
                                                             success: function (result) {
                                                                 $('#ModalCreate').modal('toggle');
                                                                 $('#ModalExitoso').modal('toggle');
+                                                                location.reload();
                                                             },
                                                             error: function (result) {
                                                                 console.log(result.responseText);
@@ -821,7 +939,7 @@
                                                     var resolutivoInput = $("#resolutivoMod");
                                                     var id_aclaracionInput = $("#getId_aclaracion");
                                                     
-                                                    //input_oculto
+                                                    //input_hide
                                                     var id_aclaraciones   = $("#id_aclaracion");
                                                     function setTextToInput(
                                                             nombre,
@@ -842,60 +960,105 @@
                                                         id_aclaracionInput.text("Detalles de aclaracion de pago Aclaracion: "+id_aclaracion);
                                                         id_aclaraciones.val(id_aclaracion);
                                                         
-                                                          $.ajax({
+                                                        //CONSULTA DE DOCUMENTOS EXISTENTES
+                                                        let array_files = new Array();
+                                                        let obj_documentos;
+                                                        $("#fileContainerOld").html("");
+                                                        
+                                                        $.ajax({
                                                             url: "get_docu.htm",
                                                             type: "POST",
                                                             data: {"getId_aclaracion" : id_aclaracion},
-                                                            success: function () {
+                                                            beforeSend: function() {
+                                                             console.log("Id aclaración PARA LUIS EJEMPLO" + id_aclaracion);
+                                                                        },
+                                                            success: function (data) {
+                                                                console.log("RESPONSE DOCU",JSON.parse(data));
+                                                                obj_documentos = JSON.parse(data);
+                                                                for(let index_item in obj_documentos ){
+                                                                    $("#fileContainerOld").append(
+                                                                        `<div class="row col-md-12">`+
+                                                                        `<button id="file_`+index_item+`"  onclick="visualizarDocumento('`+obj_documentos[index_item].archivo+`',`+index_item+`,`+obj_documentos[index_item].id_documento+`);" type='button' class="btn btn-sm col-md-4"><span class="fa fa-file-text" style="margin-right: 12px;"></span>`+obj_documentos[index_item].nombre_archivo+`</button>`+
+                                                                        `<button id="btn_remove_`+index_item+`" onclick='remove_file(`+index_item+`,`+obj_documentos[index_item].id_documento+`);' type='button' class='btn btn-sm col-lg-1 col-md-1'><span class='fa fa-times' style='color:red;'></span></button>`+
+                                                                        `</div>`
+                                                                    );
+                                                                }
+                                                                
+                                                                 
+                                                                console.log("SUCCESS DE LUIS");
                                                                 console.log("SUCCESS");
-                                                               
+                                                                //Search ID with element files
+                                                                $("button[id^='file_']").each(function(){
+                                                                   console.log($(this).attr("id"),$(this).text());
+                                                                   array_files.push({
+                                                                       "id_file"     :$(this).attr("id"), 
+                                                                       "doc_name"    :$(this).text().replace(" ","")
+                                                                   });
+                                                                });
+                                                                console.log("SUCCESS PARA LUIS ENLISTANDO LOS FILES");
+                                                                console.log("FILES_DIV:",array_files);
+                                                                
+                                                                $("#form_file1").show();
+                                                                $("#form_file2").show();
+                                                                $("#form_file3").show();
+                                                                for(index in array_files){
+//                                                                    if(array_files[index].id_file == "file_0"){
+//                                                                        $("#form_file1").hide();
+//                                                                    }else{
+//                                                                        $("#form_file1").show();
+//                                                                    }
+//                                                                    if(array_files[index].id_file == "file_1"){
+//                                                                         $("#form_file2").hide();
+//                                                                    }
+//                                                                    else{
+//                                                                        $("#form_file2").show();
+//                                                                    }
+//                                                                    if(array_files[index].id_file == "file_2"){
+//                                                                        $("#form_file3").hide();
+//                                                                    }
+//                                                                    else{
+//                                                                        $("#form_file3").show();
+//                                                                    }
+
+                                                                      if(array_files[index].id_file === "file_0"){
+                                                                        $("#form_file1").hide();
+                                                                      }else if(array_files[index].id_file === "file_1"){
+                                                                        $("#form_file2").hide();
+                                                                      }else if(array_files[index].id_file === "file_2"){
+                                                                        $("#form_file3").hide();
+                                                                      }
+                                                                }
+                                                                
+                                                                
+
                                                             },
                                                             error: function (erorr) {
                                                                 console.log(erorr);
                                                             }
 
                                                         });
-                                                        
-
                                                     }
+                                                    //Preview documents
+                                                    function visualizarDocumento(uri_doc,id_file_html,id_documento){
+                                                        $("#iframe_documento").attr("src",uri_doc);
+                                                        $("#btn_download_doc").attr("href",uri_doc);
+                                                        $("#btn_remove_doc").attr("onclick", "remove_file("+id_file_html+","+id_documento+")");
+                                                        //$('#ModalModificate').modal('hide');
+                                                        $('#ModalModificate').modal('toggle');   
+                                                       //$('document.body').removeClass('modal-open');//eliminamos la clase del body para poder hacer scroll
+                                                        //$('.modal-backdrop').remove();//eliminamos el backdrop del modal
+                                                        $('#ModalDocumento').modal('toggle');
+                                                      
+                                                        
+                                                    }
+                                                    /*$('#ModalModificate').on('hidden.bs.modal', function () {
+                                                        $("#fileContainerOld").empty();
+//                                                        
+                                                        
+                                                        console.log("Modal cerrado");
+                                                    });*/
 
-                                                    $(document).ready(function () {
-                                                        $(function () {
-                                                            $('#semana_pagoNue').datepicker({
-                                                                dateFormat: "yy-mm-dd",
-
-                                                            });
-                                                        });
-
-
-
-
-
-                                                        //dataTable settings
-                                                        $('#dataTable').DataTable({
-                                                            responsive: true,
-                                                            language: {
-                                                                "search": "Nombre de usuario",
-                                                                "lengthMenu": "Mostrar _MENU_ registros por página",
-                                                                "zeroRecords": "Sin resultados",
-                                                                "info": "Mostrando página _PAGE_ de _PAGES_",
-                                                                "infoEmpty": "No se encontrarón registros",
-                                                                "infoFiltered": "(Filtrado desde el total de registros _MAX_)",
-                                                                "paginate": {
-                                                                    "first": "Primera",
-                                                                    "last": "Última",
-                                                                    "next": "Siguiente",
-                                                                    "previous": "Anterior"
-                                                                }
-                                                            }
-                                                        });
-
-
-
-
-
-
-                                                    });
+                                        
 
         </script>
 

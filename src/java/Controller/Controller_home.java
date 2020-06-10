@@ -15,6 +15,7 @@ import Model.get_documento;
 import Model.get_usuarios;
 import Model.resolutivo_aclaracion;
 import Model.rol_usuarios;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -30,8 +31,10 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import javax.json.stream.JsonGenerationException;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.CacheControl;
 import org.apache.commons.io.IOUtils;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -48,6 +51,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.cache.CacheManager;
+import org.springframework.scheduling.annotation.Scheduled;
 
 /**
  *
@@ -60,7 +65,19 @@ public class Controller_home {
     public int id_aclaracion;
     public int id_documento;
     public int id_aclara;
+    public int id_aclaraEli;
+    public int id_documentoEli;
+    public int id_aclaracionRes;
+     private CacheManager cacheManager;        
 
+     @Scheduled(cron = "0 0/30 * * * ?")              // execure after every 30 min
+    public void clearCacheSchedule(){
+        for(String name:cacheManager.getCacheNames()){
+            cacheManager.getCache(name).clear();            // clear cache by name
+        }
+    }
+     
+     
     //Ruta para enviar los archivos
     private static String UPLOADED_FOLDER = "uploads/files";
     //Aquí se van a subir los archivos C:\Users\atzin\GlassFish_Server\glassfish\domains\domain1\config
@@ -201,12 +218,13 @@ public class Controller_home {
     }
 
      @RequestMapping("/get_docu")
-    public ModelAndView get_docu(HttpServletRequest request/*2*/) throws SQLException, MalformedURLException, IOException {
+     @ResponseBody
+    public String get_docu(HttpServletRequest request/*2*/) throws SQLException, MalformedURLException, IOException {
          List<get_documento> docus = new ArrayList<>();
         String sql6 = "{call sp_get_documentos_aclaracion(?)}";
         String getId_aclaracion = request.getParameter("getId_aclaracion");
         id_aclara = Integer.parseInt(request.getParameter("getId_aclaracion"));
-        System.out.println("GETID_ACLARACION"+id_aclara);
+        System.out.println("GETID_ACLARACION "+id_aclara);
         try (Connection dbConnection6 = dbSource.conectar().getConnection();
                 CallableStatement newService6 = dbConnection6.prepareCall(sql6);) {
 
@@ -226,23 +244,83 @@ public class Controller_home {
                     docu.setArchivo(servicesRs.getString(5));
                      docu.setEstado(servicesRs.getString(6));
                     docu.setComentario(servicesRs.getString(7));
-                   
-                    // GET NOMBRE_ARCHIVO
-                     // create object of Path 
-                    Path path = Paths.get(servicesRs.getString(5)); 
+                    id_documento = servicesRs.getInt(1);
+//                    //GET NOMBRE_ARCHIVO
+//                      //create object of Path 
+//                    Path path = Paths.get(servicesRs.getString(5)); 
+//
+//                     //call getFileName() and get FileName path object 
+//                    Path fileName = path.getFileName(); 
+//
+//                     //print FileName 
+//                    System.out.println("FileName: " + fileName.toString());   
+//                    
+//                    docu.setNombre_archivo(fileName.toString());
 
-                    // call getFileName() and get FileName path object 
-                    Path fileName = path.getFileName(); 
+                    //GET NOMBRE_ARCHIVO
+                    String str = servicesRs.getString(5); 
+                    String[] arrOfStr = str.split("/", 0); 
 
-                    // print FileName 
-                    System.out.println("FileName: " + fileName.toString());   
-                    
-                    docu.setNombre_archivo(fileName.toString());
-                    
+//                  for (String a : arrOfStr) 
+//                      System.out.println(a); 
+                    System.out.println("FILENAME:"+arrOfStr[arrOfStr.length - 1 ]);
+                    docu.setNombre_archivo(arrOfStr[arrOfStr.length - 1 ]);
+//                    
                     
                     docus.add(docu);
 //                    Add value to ID_DOCUMENTO
-                    id_documento = servicesRs.getInt(1);
+                     
+                    
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+       
+        //mav.addObject("docus", docus);
+        //System.out.println("ID 1 documento "+docus.get(1).getId_documento());
+        System.out.println("ID DOCUMENTO Aparte " + id_documento);
+
+        ObjectMapper mapper = new ObjectMapper();
+        String data = mapper.writeValueAsString(docus);
+        return data;
+    }
+    
+    
+     @RequestMapping("/delete_docu")
+    public ModelAndView delete_docu(HttpServletRequest request/*2*/) throws SQLException, MalformedURLException, IOException {
+        
+        List<add_documento> eliminar_documentos = new ArrayList<>();
+        String sql6 = "{call sp_eliminar_documentos_aclaracion (?,?)}";
+         //String getId_aclaracion = request.getParameter("getId_aclaracion");
+         id_aclaraEli = Integer.parseInt(request.getParameter("getId_aclaracion"));
+          //String getId_documento = request.getParameter("getId_documento");
+          id_documentoEli = Integer.parseInt(request.getParameter("getId_documento"));
+        System.out.println("GETID_ACLARACION_ELIMINAR "+id_aclara);
+        try (Connection dbConnection6 = dbSource.conectar().getConnection();
+                CallableStatement newService = dbConnection6.prepareCall(sql6);) {
+
+            newService.setInt(1, id_aclaraEli);
+            newService.setInt(2, id_documentoEli);
+            newService.execute();
+            System.out.println(newService);
+
+            try (ResultSet servicesRs = (ResultSet) newService.getResultSet();) {
+                System.out.println("RESPONSE:" + servicesRs);
+                while (servicesRs.next()) {
+                    add_documento eliminar_documento = new add_documento();
+                    
+                     eliminar_documento.setId_aclaracion(servicesRs.getInt(1));
+                     eliminar_documento.setUrl(servicesRs.getString(2));
+                     eliminar_documento.setId_documento(servicesRs.getInt(3));
+                    
+                    
+                    
+                    eliminar_documentos.add(eliminar_documento);
+
+                    
                     
                 }
             } catch (Exception e) {
@@ -252,7 +330,7 @@ public class Controller_home {
             System.out.println(e.getMessage());
         }
         
-        mav.addObject("docus", docus);
+        mav.addObject("eliminar_documentos", eliminar_documentos);
         //System.out.println("ID 1 documento "+docus.get(1).getId_documento());
         System.out.println("ID DOCUMENTO Aparte " + id_documento);
 
@@ -261,24 +339,20 @@ public class Controller_home {
         return mav;
     }
 
-    
-
-    @RequestMapping(value = "/upload_files", method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseEntity<?> uploadMultipleFiles(@RequestParam(value= "file", required = false) MultipartFile[] files, HttpServletRequest request/*2*/) {
-        
-            List<resolutivo_aclaracion> aclaraciones = new ArrayList<>();
+     @RequestMapping("/upload_resolutivo")
+    public ModelAndView upload_resolutivo(HttpServletRequest request/*2*/) throws SQLException, MalformedURLException, IOException {
+        List<resolutivo_aclaracion> aclaraciones = new ArrayList<>();
             String resolutivoMod = request.getParameter("resolutivoMod");
             System.out.println(resolutivoMod);
             System.out.println("Entre en add Resolutivo");
-            System.out.println("id_aclaracion " + id_aclaracion);
+            id_aclaracionRes = Integer.parseInt(request.getParameter("getId_aclaracion"));
             System.out.println("RESOLUTIVO " + resolutivoMod);
             if (resolutivoMod != null){
                 String sql ="{call sp_registrar_resolutivo_aclaracion(?,?) }";
                 try (Connection dbConnection = dbSource.conectar().getConnection();
                     CallableStatement newService = dbConnection.prepareCall(sql);) {
 
-                    newService.setInt(1, id_aclaracion);
+                    newService.setInt(1, id_aclaracionRes);
                     newService.setString(2, resolutivoMod);
                     System.out.println(newService);
                     newService.execute();
@@ -302,135 +376,12 @@ public class Controller_home {
 
                 System.out.println("id_aclaracion" + id_aclaracion);
                 mav.addObject("aclaraciones", aclaraciones);
-                
+                 mav.setViewName("home");
             }
-
-        if(files != null){
-            try {
-
-                String status = "";
-                File dir = new File(UPLOADED_FOLDER);
-                for (int i = 0; i < files.length; i++) {
-                    MultipartFile file = files[i];
-                    try {
-                        byte[] bytes = file.getBytes();
-
-                        if (!dir.exists()) {
-                            dir.mkdirs();
-                        }
-
-                        File uploadFile = new File(dir.getAbsolutePath()
-                                + File.separator + file.getOriginalFilename());
-                        BufferedOutputStream outputStream = new BufferedOutputStream(
-                                new FileOutputStream(uploadFile));
-                        outputStream.write(bytes);
-                        outputStream.close();
-
-                         System.out.println(uploadFile);
-                         String absolutePath = uploadFile.getAbsolutePath();
-                         String filePath = (dir.getAbsolutePath()+ File.separator + file.getOriginalFilename());
-                        status = status + "You successfully uploaded file=" + file.getOriginalFilename();
-                        System.out.println(filePath);
-                        List<add_documento> documentos = new ArrayList<>();
-                        String sql ="{call sp_subir_documentos_aclaracion(?,?,?) }";
-                     try (Connection dbConnection = dbSource.conectar().getConnection();
-                    CallableStatement newService = dbConnection.prepareCall(sql);) {
-
-                newService.setInt(1, id_aclaracion);
-                newService.setString(2, filePath);
-                newService.setInt(3, 1);
-                System.out.println(newService);
-                newService.execute();
-                System.out.println(newService);
-
-                try (ResultSet servicesRs = (ResultSet) newService.getResultSet();) {
-                    System.out.println("RESPONSE:" + servicesRs);
-                    while (servicesRs.next()) {
-                        add_documento documento = new add_documento();
-                        documento.setId_aclaracion(servicesRs.getInt(1));
-                        documento.setUrl(servicesRs.getString(2));
-                        documento.setId_documento(servicesRs.getInt(3));
-                        documentos.add(documento);
-
-
-                    }
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                }
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-
-            System.out.println("id_documento" + id_aclaracion);
-            mav.addObject("documentos", documentos);
-    //                    
-
-
-                    } catch (Exception e) {
-                        status = status + "Failed to upload " + file.getOriginalFilename() + " " + e.getMessage();
-                    }
-                }
-
-            } catch (Exception e) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-            
-        }
+        mav.setViewName("home");
         
-//            List<add_documento> documentos = new ArrayList<>();
-//            if (resolutivoMod != null){
-//                String sql ="{call sp_registrar_resolutivo_aclaracion(?,?) }";
-//                 try (Connection dbConnection = dbSource.conectar().getConnection();
-//                CallableStatement newService = dbConnection.prepareCall(sql);) {
-//            
-//            newService.setInt(1, id_aclaracion);
-//            newService.setString(2, resolutivoMod);
-//            System.out.println(newService);
-//            newService.execute();
-//            System.out.println(newService);
-//
-//            try (ResultSet servicesRs = (ResultSet) newService.getResultSet();) {
-//                System.out.println("RESPONSE:" + servicesRs);
-//                while (servicesRs.next()) {
-//                    resolutivo_aclaracion aclaracion = new resolutivo_aclaracion();
-//                    aclaracion.setId_resolutivo(servicesRs.getInt(1));
-//                    aclaracion.setResolutivo(servicesRs.getString(2));
-//                    aclaraciones.add(aclaracion);
-//                    
-//                }
-//            } catch (Exception e) {
-//                System.out.println(e.getMessage());
-//            }
-//        } catch (SQLException e) {
-//            System.out.println(e.getMessage());
-//        }
-//
-//        System.out.println("id_aclaracion" + id_aclaracion);
-//        mav.addObject("aclaraciones", aclaraciones);
-//            
-            
-            
-            
-             mav.setViewName("home");
-
-        return new ResponseEntity<>(HttpStatus.OK);
-
+        return mav;
+    
     }
-
-//    @RequestMapping(value = "/getpdf1", method = RequestMethod.GET)
-//    public ResponseEntity<byte[]> getPDF1() {
-//
-//        HttpHeaders headers = new HttpHeaders();
-//
-//        headers.setContentType(MediaType.parseMediaType("application/pdf"));
-//        String filename = "pdf1.pdf";
-//
-//        headers.add("Content-Disposition", "inline; filename=" + "example.pdf");
-//
-//        headers.setContentDispositionFormData(filename, filename);
-//        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
-//        ResponseEntity<byte[]> response = new ResponseEntity<byte[]>(pdf1Bytes, headers, HttpStatus.OK);
-//        return response;
-//    }
 }
 

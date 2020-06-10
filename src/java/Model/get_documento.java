@@ -19,6 +19,8 @@ public class get_documento {
     public String estado;
     public String comentario;
     public String nombre_archivo;
+    
+    
     public String getNombre_archivo() {
         return nombre_archivo;
     }
