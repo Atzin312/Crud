@@ -303,7 +303,7 @@
 
 
 
-        <!-- Modal User register -->
+        <!-- Modal Data Register -->
         <div id="ModalExitoso" aria-labelledby="mediumModalLabel" class="modal fade" role="dialog" tabindex="-1" aria-hidden="true" >
 
             <div class="modal-dialog modal-md modal-dialog-centered">
@@ -312,7 +312,7 @@
                 <div class="modal-content ">
 
                     <div class="modal-header">
-                        <h4 class="modal-title">Notificación Enviada</h4>
+                        <h4 class="modal-title">Datos Guardados</h4>
                         <button type="button" class="close" data-dismiss="modal" data-backdrop="false">&times;</button>
                     </div>
 
@@ -345,7 +345,7 @@
         
         
         
-        <!-- Modal User register -->
+        <!-- Modal Document Preview -->
         <div id="ModalDocumento" aria-labelledby="mediumModalLabel" class="modal fade" role="dialog" tabindex="-1" aria-hidden="true" >
 
             <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -384,7 +384,7 @@
         
         
 
-        <!-- Modal User register -->
+        <!-- Modal Notification Message  -->
         <div id="ModalNotificacion" aria-labelledby="mediumModalLabel" class="modal fade" role="dialog" tabindex="-1" aria-hidden="true" >
 
             <div class="modal-dialog modal-md modal-dialog-centered">
@@ -474,9 +474,7 @@
                             </div>
 
                             <br>
-<!--                            <form enctype="multipart/form-data" id="form_upload_files" method="POST">  -->
-                                <!-- <form action="upload_resolutivo.htm" method="POST">-->
-                                
+
                                 <div class="row col-md-12 col-sm-12">
                                     <label class="control-label col-md-4">Resolutivo</label>
                                     <textarea class="form-control col-md-8" rows="10" cols="30" name="resolutivoMod" id="resolutivoMod" cols="30" rows="3"></textarea>
@@ -505,8 +503,10 @@
                                 <div id="fileContainerOld" class="row col-md-12 col-sm-12">
                                     
                                 </div>
-
-                                
+                                <br>
+                                <div class="row col-md-12 col-sm-12 justify-content-center" >
+                                    <td><input type="checkbox" id="resolucion_procedente"  value="" >Aclaración procedente</td>
+                                </div>
 
                                 <br>
                                 <br>
@@ -516,13 +516,6 @@
                                     <button class="btn btn-success btn-sm col-lg-4 col-md-6  ml-auto" id="notificarTelefono">Notificar</button>
 
                                 </div>
-                            
-                            <!--<div class="row form-group col-lg-12">
- 
-                                     
-                                    
-                                 </div>-->
-
 
                         </div>
 
@@ -608,13 +601,7 @@
 
                                                         });
                                                     });
-                                                    
-                                                   
-                                                      
-                                                 
-                                                    
-                                                    
-                                                    
+
                                                     //Search button
                                                     $("#btnUpload_resolutivo").submit(function (event) {
                                                         event.preventDefault();
@@ -628,7 +615,7 @@
                                                             data: parametros,
                                                             success: function () {
                                                                 console.log("SUCCESS");
-                                                                 window.location.reload(true);
+                                                                 
                                                             },
                                                             error: function (erorr) {
                                                                 console.log(erorr);
@@ -700,9 +687,7 @@
                                                                     "resolutivoMod": $("#resolutivoMod").val(),
                                                                     "getId_aclaracion" : $("#id_aclaracion").val()
                                                                 },
-                                                                
-                                                                
-                                                               
+                              
                                                                 success: function (result) {
                                                                     console.log(result);
                                                                     $('#ModalModificate').modal('toggle');
@@ -722,15 +707,10 @@
                                                                 processData: false,
                                                                 cache: false,
                                                                 data: formDataFile1,
-                                                                /*beforeSend: function(xhr, settings) { 
-                                                                 xhr.setRequestHeader("Content-Type", "multipart/form-data;boundary=gc0p4Jq0M2Yt08jU534c0p"); 
-                                                                 settings.data = {name: "file", file: inputElement.files[0]};      
-                                                                 },*/
+                                                                
                                                                 success: function (result) {
                                                                     console.log(result);
-                                                                    /*$('#ModalModificate').modal('toggle');
-                                                                    $('#ModalExitoso').modal('toggle');*/
-                                                                    window.location.reload(true);
+                                                                   
 
                                                                 },
                                                                 error: function (result) {
@@ -747,15 +727,10 @@
                                                                 processData: false,
                                                                 cache: false,
                                                                 data: formDataFile2,
-                                                                /*beforeSend: function(xhr, settings) { 
-                                                                 xhr.setRequestHeader("Content-Type", "multipart/form-data;boundary=gc0p4Jq0M2Yt08jU534c0p"); 
-                                                                 settings.data = {name: "file", file: inputElement.files[0]};      
-                                                                 },*/
+                                                  
                                                                 success: function (result) {
-                                                                    console.log(result);
-                                                                    /*$('#ModalModificate').modal('toggle');
-                                                                    $('#ModalExitoso').modal('toggle');*/
-                                                                    window.location.reload(true);
+                                                                    
+                                                        
 
                                                                 },
                                                                 error: function (result) {
@@ -772,16 +747,10 @@
                                                                 processData: false,
                                                                 cache: false,
                                                                 data: formDataFile3,
-                                                                /*beforeSend: function(xhr, settings) { 
-                                                                 xhr.setRequestHeader("Content-Type", "multipart/form-data;boundary=gc0p4Jq0M2Yt08jU534c0p"); 
-                                                                 settings.data = {name: "file", file: inputElement.files[0]};      
-                                                                 },*/
+                                                        
                                                                 success: function (result) {
                                                                     console.log(result);
-                                                                    window.location.reload(true);
-                                                                    /*$('#ModalModificate').modal('toggle');
-                                                                    $('#ModalExitoso').modal('toggle');*/
-
+            
                                                                 },
                                                                 error: function (result) {
                                                                     console.log(result.responseText);
@@ -793,17 +762,7 @@
                                                     });
 
                                                     var contador = 1;
-                                                    //add files
-                                                    /*$("#add_files").click(function (event) {
-                                                        event.preventDefault();
-                                                        if (contador < 3) {
-                                                            $("#fileContainer").append("<div class='row ' id='file_" + contador.toString() + "'><input type='file' class='col-sm-11 col-md-11' name='file' /><button onclick='remove_file(" + contador.toString() + ");' type='button' class='btn btn-sm col-lg-1 col-md-1'><span class='fa fa-times' style='color:red;'></span></button></div>");
-
-                                                            contador++;
-                                                        } else {
-                                                            alert("Has excedido el límite de archivos permitido");
-                                                        }
-                                                    });*/
+                                                    
                                                     //Remove Files
                                                     function remove_file(id_file_html,id_documento) {
                                                         
@@ -842,7 +801,7 @@
                                                                 //dataType: "text",
                                                                 data: {
                                                                     'telefono': $("#getNumNot").val(),
-                                                                    'body': $("#resolutivoMod").val() // <-- the $ sign in the parameter name seems unusual, I would avoid it
+                                                                    'body': $("#resolutivoMod").val() // <-- Parameters for send message
                                                                 },
                                                                 success: function (msg) {
                                                                     alert('wow' + msg);
@@ -864,7 +823,7 @@
                                                                     'semanaco': 'Semana de pago ' + $("#semana_pagoMod").val(),
                                                                     'comentarioco': 'Comentario ' + $("#comentarioMod").val(),
                                                                     'id_aclaracionco': 'Id aclaración ' + $("#getId_aclaracion").val(),
-                                                                    // <-- the $ sign in the parameter name seems unusual, I would avoid it
+                                                                    // <-- Parameters for Send Email
                                                                 },
                                                                 success: function (msg) {
                                                                     alert('wow' + msg);
@@ -894,7 +853,7 @@
                                                             
                                                             document.getElementById("nombreNue").value = "";
                                                             document.getElementById("apellidoNue").value = "";
-                                                            location.reload();
+                                                            
 
                                                             $.each(obj, function (key, data) {
                                                                 document.getElementById("nombreNue").value = data.nombre;
@@ -921,7 +880,7 @@
                                                             success: function (result) {
                                                                 $('#ModalCreate').modal('toggle');
                                                                 $('#ModalExitoso').modal('toggle');
-                                                                location.reload();
+                                                                
                                                             },
                                                             error: function (result) {
                                                                 console.log(result.responseText);
@@ -960,6 +919,12 @@
                                                         id_aclaracionInput.text("Detalles de aclaracion de pago Aclaracion: "+id_aclaracion);
                                                         id_aclaraciones.val(id_aclaracion);
                                                         
+                                                        if($("#resolutivoMod").val() !== '')
+                                                        {
+                                                            $("#resolucion_procedente").prop('checked',true);
+                                                        }else {
+                                                            $("#resolucion_procedente").prop('checked',false);
+                                                        }
                                                         //CONSULTA DE DOCUMENTOS EXISTENTES
                                                         let array_files = new Array();
                                                         let obj_documentos;

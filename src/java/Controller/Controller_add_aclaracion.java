@@ -45,7 +45,7 @@ public class Controller_add_aclaracion {
     public Controller_add_aclaracion() {
         this.dbSource = new ConnectBD();
     }
-
+    //Get User
     @RequestMapping(value = "/get_usuario")
     public @ResponseBody
     String get_usuario(HttpServletRequest request/*2*/) throws SQLException, MalformedURLException, IOException {
@@ -95,13 +95,7 @@ public class Controller_add_aclaracion {
     }
     
     
-//    @RequestMapping(value="add_rol")
-//    public ModelAndView rol_usuario(HttpServletRequest request/*2*/) throws SQLException, MalformedURLException, IOException, ParseException {
-//        
-//        
-//    }
-//    
-    
+    //Get Rol
         @RequestMapping(value = "/get_roles")
     public @ResponseBody
     String get_roles(HttpServletRequest request/*2*/) throws SQLException, MalformedURLException, IOException {
@@ -123,8 +117,7 @@ public class Controller_add_aclaracion {
                     rol.setId_rol(servicesRs.getInt(1));
                     rol.setNombre_rol(servicesRs.getString(2));
                     roles.add(rol);
-                    
-                    
+              
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -134,9 +127,6 @@ public class Controller_add_aclaracion {
         }
         
         System.out.println(roles.get(2).getNombre_rol());
-//        mav.addObject("usuarios",usuarios);
-        
-
 
         System.out.println("Antes de retornar");
         
@@ -147,6 +137,7 @@ public class Controller_add_aclaracion {
     }
     
     
+    //Add Adlarations
     @RequestMapping(value = "/add_aclaracion.htm")
     public ModelAndView add_aclaracion(HttpServletRequest request/*2*/) throws SQLException, MalformedURLException, IOException, ParseException {
            
@@ -166,25 +157,9 @@ public class Controller_add_aclaracion {
         try (Connection dbConnection = dbSource.conectar().getConnection();
                 //Tipo CallableStatement, otra variante tambien es usar PrepareStatement
                 CallableStatement newService = dbConnection.prepareCall(sql);) {
-                    
-//                dbConnection.setAutoCommit(false);
 
-                    
-//                newService.setString(2, semana_pagoNue + " 00:00:00");
-//                newService.setString(3, comentarioNue);
-//                newService.setInt(4, 1);
                 newService.execute();
 
-//                if (res) {
-//                    //Finalizamos la transaccion
-//                    dbConnection.commit();
-//                    System.err.println("Llamada a PostgreSQL finalizada - sp_registrar_aclaracion_pagos.");
-//
-//                } else {
-//                    //Si hubo un error, cancelamos la transaccion.
-//                    dbConnection.rollback();
-//                    System.out.println("Hubo error al insertar nuevo servicio: Controller_home");
-//                }
             } catch (Exception ex) {
                 System.err.println("Excepcion sp_registrar_aclaracion_pagos() - Controller_home : " + ex.getMessage());
             }

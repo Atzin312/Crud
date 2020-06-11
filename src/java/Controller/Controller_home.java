@@ -88,13 +88,8 @@ public class Controller_home {
     public Controller_home() {
         this.dbSource = new ConnectBD();
     }
-
-//    @RequestMapping("/home.htm")
-//    public ModelAndView home_start(){
-//        ModelAndView mav = new ModelAndView();
-//        mav.setViewName("home");
-//        return mav;
-//    }
+        
+    //Collect ID_USER and Create Index Table
     @RequestMapping("/home")
     public ModelAndView home(HttpServletRequest request/*2*/) throws SQLException, MalformedURLException, IOException {
 //        Create the list And the sql sentence
@@ -206,9 +201,7 @@ public class Controller_home {
                 System.out.println(e.getMessage());
             }
             System.out.println("ID ACLA " + id_aclaracion);
-            //System.out.println("SEMANA PAGO "+pagos.get(5).getSemana_pago());
-//        System.out.println("ID 5ta ACLARACION "+pagos.get(5).getId_aclaracion());
-//            System.out.println("ID ACLARACION " + id_aclaracion);
+
             mav.addObject("pagos", pagos);
        
         }
@@ -216,7 +209,7 @@ public class Controller_home {
         return mav;
        
     }
-
+        //Get Documents
      @RequestMapping("/get_docu")
      @ResponseBody
     public String get_docu(HttpServletRequest request/*2*/) throws SQLException, MalformedURLException, IOException {
@@ -245,32 +238,15 @@ public class Controller_home {
                      docu.setEstado(servicesRs.getString(6));
                     docu.setComentario(servicesRs.getString(7));
                     id_documento = servicesRs.getInt(1);
-//                    //GET NOMBRE_ARCHIVO
-//                      //create object of Path 
-//                    Path path = Paths.get(servicesRs.getString(5)); 
-//
-//                     //call getFileName() and get FileName path object 
-//                    Path fileName = path.getFileName(); 
-//
-//                     //print FileName 
-//                    System.out.println("FileName: " + fileName.toString());   
-//                    
-//                    docu.setNombre_archivo(fileName.toString());
 
-                    //GET NOMBRE_ARCHIVO
                     String str = servicesRs.getString(5); 
                     String[] arrOfStr = str.split("/", 0); 
 
-//                  for (String a : arrOfStr) 
-//                      System.out.println(a); 
                     System.out.println("FILENAME:"+arrOfStr[arrOfStr.length - 1 ]);
                     docu.setNombre_archivo(arrOfStr[arrOfStr.length - 1 ]);
-//                    
-                    
+                 
                     docus.add(docu);
-//                    Add value to ID_DOCUMENTO
-                     
-                    
+       
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -278,9 +254,7 @@ public class Controller_home {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-       
-        //mav.addObject("docus", docus);
-        //System.out.println("ID 1 documento "+docus.get(1).getId_documento());
+
         System.out.println("ID DOCUMENTO Aparte " + id_documento);
 
         ObjectMapper mapper = new ObjectMapper();
@@ -288,7 +262,7 @@ public class Controller_home {
         return data;
     }
     
-    
+    //Delete Documents
      @RequestMapping("/delete_docu")
     public ModelAndView delete_docu(HttpServletRequest request/*2*/) throws SQLException, MalformedURLException, IOException {
         
@@ -315,13 +289,9 @@ public class Controller_home {
                      eliminar_documento.setId_aclaracion(servicesRs.getInt(1));
                      eliminar_documento.setUrl(servicesRs.getString(2));
                      eliminar_documento.setId_documento(servicesRs.getInt(3));
-                    
-                    
-                    
+         
                     eliminar_documentos.add(eliminar_documento);
-
-                    
-                    
+      
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -331,14 +301,14 @@ public class Controller_home {
         }
         
         mav.addObject("eliminar_documentos", eliminar_documentos);
-        //System.out.println("ID 1 documento "+docus.get(1).getId_documento());
         System.out.println("ID DOCUMENTO Aparte " + id_documento);
 
         
         mav.setViewName("home");
         return mav;
     }
-
+    
+    //Upload Resolution
      @RequestMapping("/upload_resolutivo")
     public ModelAndView upload_resolutivo(HttpServletRequest request/*2*/) throws SQLException, MalformedURLException, IOException {
         List<resolutivo_aclaracion> aclaraciones = new ArrayList<>();
