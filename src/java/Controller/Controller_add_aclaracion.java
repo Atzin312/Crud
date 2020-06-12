@@ -5,7 +5,7 @@
  */
 package Controller;
 
-import Model.ConnectBD;
+import Conection.ConnectBD;
 import Model.aclaraciones_usuarios;
 import Model.get_usuarios;
 import Model.rol_usuarios;
@@ -28,6 +28,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+
+
+
 /**
  *
  * @author atzin
@@ -37,6 +40,10 @@ public class Controller_add_aclaracion {
 
     public int id;
     public int id_aclaracion;
+    
+    
+    //Querys
+      Controller_query procedimiento = new Controller_query();
     
     private ConnectBD dbSource = null;
     ModelAndView mav = new ModelAndView();
@@ -51,7 +58,7 @@ public class Controller_add_aclaracion {
     String get_usuario(HttpServletRequest request/*2*/) throws SQLException, MalformedURLException, IOException {
 
         List<get_usuarios> usuarios = new ArrayList<>();
-        String sql = "{call sp_getusuario(?)}";
+         String sql = procedimiento.spGetUsuario();
         String txtGetUser = request.getParameter("txtGetUser");
         System.out.println("GET USER:" + txtGetUser);
 
@@ -101,7 +108,7 @@ public class Controller_add_aclaracion {
     String get_roles(HttpServletRequest request/*2*/) throws SQLException, MalformedURLException, IOException {
 
                  List<rol_usuarios> roles = new ArrayList<>();
-        String sql3 =  "SELECT id_rol, nombre_rol FROM public.rol";
+        String sql3 = procedimiento.spGetRoles();
         try (Connection dbConnection3 = dbSource.conectar().getConnection();
             
             CallableStatement newService3 = dbConnection3.prepareCall(sql3);){
