@@ -6,56 +6,27 @@
 package Controller;
 
 import Model.aclaraciones_pagos;
-import java.sql.CallableStatement;
 import Conection.ConnectBD;
-import Model.aclaraciones_usuarios;
-import Model.add_aclaracion;
 import Model.add_documento;
 import Model.get_documento;
 import Model.get_usuarios;
 import Model.resolutivo_aclaracion;
-import Model.rol_usuarios;
+import Repositories.Aclaracion.RepositoriesGetIndex;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import javax.json.stream.JsonGenerationException;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.CacheControl;
-import org.apache.commons.io.IOUtils;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Scheduled;
-
-//IMPORT QUERYS
-import Controller.Controller_query;
 
 /**
  *
@@ -72,16 +43,15 @@ public class Controller_home {
     public int id_documentoEli;
     public int id_aclaracionRes;
      private CacheManager cacheManager;        
-
+    
      @Scheduled(cron = "0 0/30 * * * ?")              // execure after every 30 min
     public void clearCacheSchedule(){
         for(String name:cacheManager.getCacheNames()){
             cacheManager.getCache(name).clear();            // clear cache by name
         }
     }
-    //Querys
-      Controller_query procedimiento = new Controller_query();
      
+     RepositoriesGetIndex repository = new RepositoriesGetIndex();
     //Ruta para enviar los archivos
     private static String UPLOADED_FOLDER = "uploads/files";
     //Aquí se van a subir los archivos C:\Users\atzin\GlassFish_Server\glassfish\domains\domain1\config
@@ -92,15 +62,16 @@ public class Controller_home {
     public Controller_home() {
         this.dbSource = new ConnectBD();
     }
-   
+        
     //Collect ID_USER and Create Index Table
+ //Collect ID_USER and Create Index Table
     @RequestMapping("/home")
     public ModelAndView home(HttpServletRequest request/*2*/) throws SQLException, MalformedURLException, IOException {
 //        Create the list And the sql sentence
         List<get_usuarios> usuarios = new ArrayList<>();
         //String sql = "{call sp_getusuario(?)}";
         
-        String sql = procedimiento.spGetUsuario();
+        String sql = "{call sp_getusuario(?)}";
         
         String txtBuscar = request.getParameter("txtBuscar");
         System.out.println(txtBuscar);
@@ -134,13 +105,13 @@ public class Controller_home {
         System.out.println("ID USUARIO " + id_usuario);
         mav.addObject("usuarios", usuarios);
 
-        if (id_usuario >= 1) {
+        if (id_usuario >= 0) {
 //            Use value to rol id
 
             
 //            Add value for home index 
             List<aclaraciones_pagos> pagos = new ArrayList<>();
-            String sql2 = procedimiento.spGetIndex();
+             String sql2 = "{call sp_indexaclaracionespagos(?) }";
             try (Connection dbConnection2 = dbSource.conectar().getConnection();
                     //Tipo CallableStatement, otra variante tambien es usar PrepareStatement
                     CallableStatement newService2 = dbConnection2.prepareCall(sql2);) {
@@ -182,6 +153,7 @@ public class Controller_home {
             System.out.println("ID ACLA " + id_aclaracion);
 
             mav.addObject("pagos", pagos);
+       System.out.println("pagos "+pagos);
        
         }
         mav.setViewName("home");
@@ -192,48 +164,11 @@ public class Controller_home {
      @RequestMapping("/get_docu")
      @ResponseBody
     public String get_docu(HttpServletRequest request/*2*/) throws SQLException, MalformedURLException, IOException {
-         List<get_documento> docus = new ArrayList<>();
-        String sql6 = procedimiento.spGetDocumentos();
+         
+        List<get_documento> docus = new ArrayList();
         String getId_aclaracion = request.getParameter("getId_aclaracion");
         id_aclara = Integer.parseInt(request.getParameter("getId_aclaracion"));
-        System.out.println("GETID_ACLARACION "+id_aclara);
-        try (Connection dbConnection6 = dbSource.conectar().getConnection();
-                CallableStatement newService6 = dbConnection6.prepareCall(sql6);) {
-
-            newService6.setInt(1, id_aclara);
-            newService6.execute();
-            System.out.println(newService6);
-
-            try (ResultSet servicesRs = (ResultSet) newService6.getResultSet();) {
-                System.out.println("RESPONSE:" + servicesRs);
-                while (servicesRs.next()) {
-                    get_documento docu = new get_documento();
-                    
-                    docu.setId_documento(servicesRs.getInt(1));
-                    docu.setId_aclaracion(servicesRs.getInt(2));
-                    docu.setId_tipo_documento(servicesRs.getInt(3));
-                    docu.setTipo_documento(servicesRs.getString(4));
-                    docu.setArchivo(servicesRs.getString(5));
-                     docu.setEstado(servicesRs.getString(6));
-                    docu.setComentario(servicesRs.getString(7));
-                    id_documento = servicesRs.getInt(1);
-
-                    String str = servicesRs.getString(5); 
-                    String[] arrOfStr = str.split("/", 0); 
-
-                    System.out.println("FILENAME:"+arrOfStr[arrOfStr.length - 1 ]);
-                    docu.setNombre_archivo(arrOfStr[arrOfStr.length - 1 ]);
-                 
-                    docus.add(docu);
-       
-                }
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-
+        docus = repository.getDocumentos(id_aclara);
         System.out.println("ID DOCUMENTO Aparte " + id_documento);
 
         ObjectMapper mapper = new ObjectMapper();
@@ -246,39 +181,12 @@ public class Controller_home {
     public ModelAndView delete_docu(HttpServletRequest request/*2*/) throws SQLException, MalformedURLException, IOException {
         
         List<add_documento> eliminar_documentos = new ArrayList<>();
-         String sql5 = procedimiento.spDeleteDocumentos();
-         //String getId_aclaracion = request.getParameter("getId_aclaracion");
+        String sql6 = "{call sp_eliminar_documentos_aclaracion (?,?)}";
          id_aclaraEli = Integer.parseInt(request.getParameter("getId_aclaracion"));
-          //String getId_documento = request.getParameter("getId_documento");
-          id_documentoEli = Integer.parseInt(request.getParameter("getId_documento"));
+         id_documentoEli = Integer.parseInt(request.getParameter("getId_documento"));
+         eliminar_documentos = repository.DeleteDocumentos(id_aclaraEli, id_documentoEli);
         System.out.println("GETID_ACLARACION_ELIMINAR "+id_aclara);
-        try (Connection dbConnection6 = dbSource.conectar().getConnection();
-                CallableStatement newService = dbConnection6.prepareCall(sql5);) {
-
-            newService.setInt(1, id_aclaraEli);
-            newService.setInt(2, id_documentoEli);
-            newService.execute();
-            System.out.println(newService);
-
-            try (ResultSet servicesRs = (ResultSet) newService.getResultSet();) {
-                System.out.println("RESPONSE:" + servicesRs);
-                while (servicesRs.next()) {
-                    add_documento eliminar_documento = new add_documento();
-                    
-                     eliminar_documento.setId_aclaracion(servicesRs.getInt(1));
-                     eliminar_documento.setUrl(servicesRs.getString(2));
-                     eliminar_documento.setId_documento(servicesRs.getInt(3));
-         
-                    eliminar_documentos.add(eliminar_documento);
-      
-                }
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        
+ 
         mav.addObject("eliminar_documentos", eliminar_documentos);
         System.out.println("ID DOCUMENTO Aparte " + id_documento);
 
@@ -292,38 +200,12 @@ public class Controller_home {
     public ModelAndView upload_resolutivo(HttpServletRequest request/*2*/) throws SQLException, MalformedURLException, IOException {
         List<resolutivo_aclaracion> aclaraciones = new ArrayList<>();
             String resolutivoMod = request.getParameter("resolutivoMod");
-            System.out.println(resolutivoMod);
-            System.out.println("Entre en add Resolutivo");
             id_aclaracionRes = Integer.parseInt(request.getParameter("getId_aclaracion"));
             System.out.println("RESOLUTIVO " + resolutivoMod);
             if (resolutivoMod != null){
-                 String sql4 = procedimiento.spUploadResolutivo();
-                try (Connection dbConnection = dbSource.conectar().getConnection();
-                    CallableStatement newService = dbConnection.prepareCall(sql4);) {
-
-                    newService.setInt(1, id_aclaracionRes);
-                    newService.setString(2, resolutivoMod);
-                    System.out.println(newService);
-                    newService.execute();
-                    System.out.println(newService);
-
-                    try (ResultSet servicesRs = (ResultSet) newService.getResultSet();) {
-                        System.out.println("RESPONSE:" + servicesRs);
-                        while (servicesRs.next()) {
-                            resolutivo_aclaracion aclaracion = new resolutivo_aclaracion();
-                            aclaracion.setId_resolutivo(servicesRs.getInt(1));
-                            aclaracion.setResolutivo(servicesRs.getString(2));
-                            aclaraciones.add(aclaracion);
-
-                        }
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
-                    }
-                } catch (SQLException e) {
-                    System.out.println(e.getMessage());
-                }
-
-                System.out.println("id_aclaracion" + id_aclaracion);
+                String sql ="{call sp_registrar_resolutivo_aclaracion(?,?) }";
+                aclaraciones = repository.uploadResolutivo(id_aclaracionRes, resolutivoMod);
+                System.out.println("id_aclaracion" + resolutivoMod);
                 mav.addObject("aclaraciones", aclaraciones);
                  mav.setViewName("home");
             }

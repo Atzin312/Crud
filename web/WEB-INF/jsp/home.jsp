@@ -188,7 +188,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <c:forEach items="${pagos}" var="pago" varStatus="status">
+                                <c:forEach var="pago" items="${pagos}" varStatus="tempago">
                                     <tr >
                                         <td>${pago.id_aclaracion}</td>
                                         <td>${pago.fecha_solicitud}</td>
