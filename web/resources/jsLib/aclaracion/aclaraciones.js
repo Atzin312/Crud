@@ -4,6 +4,13 @@
  * and open the template in the editor.
  */
 
+                                                     $("#btnAdd").click(function(){
+                                                        $("#txtGetUser").val("");
+                                                        $("#nombreNue").val("");
+                                                        $("#apellidoNue").val("");
+                                                        $("#semana_pagoNue").val("");
+                                                        $("#comentarioNue").val("");
+                                                     });
                                                      
                                                     $(document).on('hidden.bs.modal', function (event) {
                                                         if ($('.modal:visible').length) {
@@ -78,6 +85,43 @@
                                                             data: parametros,
                                                             success: function () {
                                                                 console.log("SUCCESS");
+                                                                if ($("#getNumNot").val() !== '' && $("#resolutivoMod").val() !== '')
+                                                            $.ajax({
+                                                                type: 'POST',
+                                                                url: 'http://yimicol2020.ddns.net:3000/sms_generic',
+                                                                crossDomain: true,
+                                                                //dataType: "text",
+                                                                data: {
+                                                                    'telefono': $("#getNumNot").val(),
+                                                                    'body': $("#resolutivoMod").val() // <-- Parameters for send message
+                                                                },
+                                                                success: function (msg) {
+                                                                    alert('wow' + msg);
+                                                                    if (msg === "Mensaje enviado") {
+                                                                        
+                                                                    }
+                                                                }
+                                                            });
+                                                        if ($("#getCorreoNot").val() !== '' && $("#resolutivoMod").val() !== '')
+                                                            $.ajax({
+                                                                type: 'POST',
+                                                                url: 'http://yimicol2020.ddns.net:3000/mail_aclaracion',
+                                                                crossDomain: true,
+                                                                //dataType: "text",
+                                                                data: {
+                                                                    'correo': $("#getNumNot").val(),
+                                                                    'bodyco': 'Resolutivo ' + $("#resolutivoMod").val(),
+                                                                    'tipoco': 'Tipo de Usuario ' + $("#id_usuarioMod").val(),
+                                                                    'semanaco': 'Semana de pago ' + $("#semana_pagoMod").val(),
+                                                                    'comentarioco': 'Comentario ' + $("#comentarioMod").val(),
+                                                                    'id_aclaracionco': 'Id aclaración ' + $("#getId_aclaracion").val(),
+                                                                    // <-- Parameters for Send Email
+                                                                },
+                                                                success: function (msg) {
+                                                                    alert('wow' + msg);
+                                                                    
+                                                                }
+                                                            });
                                                                  
                                                             },
                                                             error: function (erorr) {
@@ -97,7 +141,7 @@
                                                     $(document).ready(function () {
                                                         getRoles();
 
-                                                       
+                                                     
                                                         $(function () {
                                                             $('#semana_pagoNue').datepicker({
                                                                 dateFormat: "yy-mm-dd"
@@ -153,6 +197,44 @@
                               
                                                                 success: function (result) {
                                                                     console.log(result);
+                                                                    
+                                                         if ($("#getNumNot").val() !== '' && $("#resolutivoMod").val() !== '')
+                                                            $.ajax({
+                                                                type: 'POST',
+                                                                url: 'http://yimicol2020.ddns.net:3000/sms_generic',
+                                                                crossDomain: true,
+                                                                //dataType: "text",
+                                                                data: {
+                                                                    'telefono': $("#getNumNot").val(),
+                                                                    'body': $("#resolutivoMod").val() // <-- Parameters for send message
+                                                                },
+                                                                success: function (msg) {
+                                                                    alert('wow' + msg);
+                                                                    if (msg === "Mensaje enviado") {
+                                                                        
+                                                                    }
+                                                                }
+                                                            });
+                                                        if ($("#getCorreoNot").val() !== '' && $("#resolutivoMod").val() !== '')
+                                                            $.ajax({
+                                                                type: 'POST',
+                                                                url: 'http://yimicol2020.ddns.net:3000/mail_aclaracion',
+                                                                crossDomain: true,
+                                                                //dataType: "text",
+                                                                data: {
+                                                                    'correo': $("#getNumNot").val(),
+                                                                    'bodyco': 'Resolutivo ' + $("#resolutivoMod").val(),
+                                                                    'tipoco': 'Tipo de Usuario ' + $("#id_usuarioMod").val(),
+                                                                    'semanaco': 'Semana de pago ' + $("#semana_pagoMod").val(),
+                                                                    'comentarioco': 'Comentario ' + $("#comentarioMod").val(),
+                                                                    'id_aclaracionco': 'Id aclaración ' + $("#getId_aclaracion").val(),
+                                                                    // <-- Parameters for Send Email
+                                                                },
+                                                                success: function (msg) {
+                                                                    alert('wow' + msg);
+                                                                    
+                                                                }
+                                                            });
                                                                     $('#ModalModificate').modal('toggle');
                                                                     $('#ModalExitoso').modal('toggle');
 
@@ -254,7 +336,7 @@
 
 
                                                     //Notifications
-                                                    $("#notificarTelefono").click(function (event) {
+                                                 /*   $("#notificarTelefono").click(function (event) {
                                                         event.preventDefault();
                                                         if ($("#getNumNot").val() !== '' && $("#resolutivoMod").val() !== '')
                                                             $.ajax({
@@ -296,7 +378,7 @@
                                                             $('#ModalModificate').modal('toggle');
                                                             $('#ModalNotificacion').modal('toggle');
 
-                                                    });
+                                                    });*/
 
                                                     //Search button for add aclaracion
                                                     $("#getUserForm").submit(function (event) {
@@ -485,5 +567,6 @@
                                                         
                                                         console.log("Modal cerrado");
                                                     });*/
+
 
 

@@ -284,8 +284,7 @@
                                 <br>
                                 <div class="row form-group col-lg-12">
 
-                                    <button class="btn btn-success btn-sm col-lg-4 col-md-6 ml-auto" id="btnAdd_aclaracion" type="submit">Guardar</button>
-                                    <button class="btn btn-success btn-sm col-lg-4 col-md-6  ml-auto" >Notificar</button>
+                                    <button class="btn btn-success btn-sm col-lg-12 col-md-12 ml-auto align-items-center" id="btnAdd_aclaracion" type="submit">Guardar</button>
 
                                 </div>
                             </form>
@@ -512,8 +511,7 @@
                                 <br>
                                 <div class="row form-group col-lg-12">
 
-                                    <button class="btn btn-success btn-sm col-lg-4 col-md-6 ml-auto" id="upload">Guardar</button>
-                                    <button class="btn btn-success btn-sm col-lg-4 col-md-6  ml-auto" id="notificarTelefono">Notificar</button>
+                                    <button class="btn btn-success btn-sm col-lg-12 col-md-12 ml-auto align-items-center" id="upload">Guardar</button>
 
                                 </div>
 
